@@ -158,6 +158,130 @@
     toggle(false);
   }
 
+  /* ---------------------------------------------------------------- поиск */
+  // Указатель лежит отдельным файлом и тянется по первому открытию: класть
+  // 270 КБ в каждую страницу ради строки поиска незачем.
+  function setupSearch() {
+    var panel = document.getElementById("search");
+    var input = document.querySelector("[data-search-input]");
+    var list = document.querySelector("[data-search-results]");
+    var hint = document.querySelector("[data-search-hint]");
+    if (!panel || !input || !list) return;
+
+    var index = null, loading = null, active = -1, last = "";
+
+    function key(s) { return String(s).toUpperCase().replace(/[^A-Z0-9А-ЯЁ]/g, ""); }
+
+    function load() {
+      if (index || loading) return loading || Promise.resolve();
+      loading = fetch("assets/search-index.json")
+        .then(function (r) { return r.json(); })
+        .then(function (rows) {
+          index = rows.map(function (r) {
+            return { r: r, k: key(r.s), n: r.n.toLowerCase() };
+          });
+          if (last) render(last);
+        })
+        .catch(function () {
+          hint.textContent = "Указатель поиска не загрузился — обновите страницу.";
+        });
+      return loading;
+    }
+
+    function open(yes) {
+      panel.hidden = !yes;
+      root.classList.toggle("is-search-open", yes);
+      document.body.style.overflow = yes ? "hidden" : "";
+      Array.prototype.forEach.call(document.querySelectorAll("[data-search-open]"),
+        function (b) { b.setAttribute("aria-expanded", String(yes)); });
+      if (yes) { load(); input.focus(); input.select(); }
+    }
+
+    function money(n) {
+      return n ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u2009") + "\u2009\u20bd" : "";
+    }
+
+    function find(q) {
+      var qk = key(q), ql = q.toLowerCase().trim(), out = [];
+      for (var i = 0; i < index.length && out.length < 24; i++) {
+        var it = index[i], rank = -1;
+        if (qk && it.k.indexOf(qk) >= 0) rank = 0;          // артикул — точнее всего
+        else if (ql && it.n.indexOf(ql) >= 0) rank = 1;
+        if (rank >= 0) out.push({ it: it.r, rank: rank });
+      }
+      out.sort(function (a, b) { return a.rank - b.rank; });
+      return out.slice(0, 12);
+    }
+
+    function render(q) {
+      last = q;
+      active = -1;
+      if (!index) { list.innerHTML = ""; hint.textContent = "Загружаем указатель…"; return; }
+      if (!q.trim()) {
+        list.innerHTML = "";
+        hint.textContent = "Ищем по артикулу и названию во всех брендах.";
+        return;
+      }
+      var hits = find(q);
+      if (!hits.length) {
+        list.innerHTML = "";
+        hint.textContent = "Ничего не нашли по запросу «" + q + "».";
+        return;
+      }
+      hint.textContent = hits.length + (hits.length === 1 ? " совпадение" :
+                         hits.length < 5 ? " совпадения" : " совпадений");
+      list.innerHTML = hits.map(function (h, i) {
+        var r = h.it;
+        var skus = r.s.split(" ");
+        var shown = skus.slice(0, 3).join(", ") + (skus.length > 3 ? " и ещё " + (skus.length - 3) : "");
+        return '<li><a class="search__hit" href="' + r.h + '" data-i="' + i + '">' +
+               '<span class="search__name">' + r.n + "</span>" +
+               '<span class="search__meta">' + r.b + " · " + r.c + "</span>" +
+               '<span class="search__sku">' + shown + "</span>" +
+               '<span class="search__price">' + (r.p ? "от " + money(r.p) : "") + "</span>" +
+               "</a></li>";
+      }).join("");
+    }
+
+    function move(step) {
+      var hits = list.querySelectorAll(".search__hit");
+      if (!hits.length) return;
+      active = (active + step + hits.length) % hits.length;
+      Array.prototype.forEach.call(hits, function (a, i) {
+        a.classList.toggle("is-active", i === active);
+      });
+      hits[active].scrollIntoView({ block: "nearest" });
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll("[data-search-open]"),
+      function (b) {
+        b.addEventListener("click", function (e) { e.preventDefault(); open(true); });
+      });
+    var close = document.querySelector("[data-search-close]");
+    if (close) close.addEventListener("click", function () { open(false); });
+    panel.addEventListener("click", function (e) {
+      if (e.target === panel) open(false);
+    });
+    input.addEventListener("input", function () { render(input.value); });
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown") { e.preventDefault(); move(1); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+      else if (e.key === "Enter") {
+        var hits = list.querySelectorAll(".search__hit");
+        var go = hits[active >= 0 ? active : 0];
+        if (go) { e.preventDefault(); window.location.href = go.getAttribute("href"); }
+      }
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && root.classList.contains("is-search-open")) open(false);
+      var typing = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || ""));
+      if (!typing && (e.key === "/" || ((e.metaKey || e.ctrlKey) && e.key === "k"))) {
+        e.preventDefault(); open(true);
+      }
+    });
+    open(false);
+  }
+
   /* -------------------------------------------------------------- parallax */
   function setupParallax() {
     if (reduced || window.matchMedia("(max-width: 900px)").matches) return;
@@ -457,6 +581,7 @@
     setupReveals();
     setupHeader();
     setupMenu();
+    setupSearch();
     setupParallax();
     setupTransitions();
     setupCatalog();

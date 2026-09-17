@@ -453,16 +453,33 @@ a:hover .media img,
 }
 .hero__media { position: absolute; inset: 0; z-index: -2; }
 .hero__media img { width: 100%; height: 100%; object-fit: cover; }
-/* Светлая подложка под текстом: снимок каталожный и пёстрый, графитовый
-   набор на нём иначе не читается. */
+/* Светлая подложка под текстом: графитовый набор на пёстром снимке иначе не
+   читается. Держим её ровно такой, чтобы текст брал свои 4.5:1 — снимок в
+   герое главный, и заливать его молоком незачем. */
 .hero__media::after {
   content: ""; position: absolute; inset: 0;
   background:
-    linear-gradient(to top, rgba(247,245,241,0.92) 0%, rgba(247,245,241,0.55) 26%,
-                    rgba(247,245,241,0) 52%),
-    linear-gradient(to right, rgba(247,245,241,0.88) 0%, rgba(247,245,241,0.45) 34%,
-                    rgba(247,245,241,0) 62%);
+    linear-gradient(to top, rgba(247,245,241,0.88) 0%, rgba(247,245,241,0.44) 22%,
+                    rgba(247,245,241,0) 48%),
+    linear-gradient(to right, rgba(247,245,241,0.74) 0%, rgba(247,245,241,0.26) 30%,
+                    rgba(247,245,241,0) 58%);
 }
+/* На узком экране кадр обрезается по центру — там дерево и жалюзи, текст на
+   них теряется. Поэтому снизу подложка плотнее: читаемость важнее вида. */
+@media (max-width: 720px) {
+  /* и кадрируем ближе к острову: в центре снимка жалюзи, а зелёный мрамор
+     и светлый пол — то, ради чего снимок выбран */
+  .hero__media img { object-position: 18% 58%; }
+  .hero__media::after {
+    background:
+      linear-gradient(to top, rgba(247,245,241,0.96) 0%, rgba(247,245,241,0.86) 32%,
+                      rgba(247,245,241,0.3) 62%, rgba(247,245,241,0) 84%);
+  }
+}
+
+/* надзаголовок в герое идёт графитом, а не приглушённым: на снимке
+   стального оттенка не видно — 1.6:1 против 8:1 у графита */
+.hero .eyebrow { color: var(--fg); }
 .hero__inner {
   width: 100%;
   padding-top: clamp(3rem, 9vh, 7rem);
@@ -1593,4 +1610,94 @@ a:hover .media img,
 .media__swatch u {
   text-decoration: none; font-size: 0.625rem;
   letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
+}
+
+/* ------------------------------------------------------------------ поиск */
+.search-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.6875rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: inherit; white-space: nowrap;
+}
+.search-btn__icon {
+  width: 0.9rem; height: 0.9rem; flex: none;
+  border: 1px solid currentColor; border-radius: 50%;
+  position: relative;
+}
+.search-btn__icon::after {
+  content: ""; position: absolute; right: -0.28rem; bottom: -0.2rem;
+  width: 0.42rem; height: 1px; background: currentColor;
+  transform: rotate(45deg); transform-origin: left center;
+}
+.search-btn:hover { opacity: 0.6; }
+
+.search {
+  position: fixed; inset: 0; z-index: 80;
+  background: rgba(27, 27, 25, 0.28);
+  backdrop-filter: blur(3px);
+  display: flex; justify-content: center;
+  padding: clamp(1rem, 8vh, 7rem) var(--gutter) 2rem;
+  opacity: 0; transition: opacity 0.4s var(--ease);
+}
+.is-search-open .search { opacity: 1; }
+.search__sheet {
+  width: min(46rem, 100%);
+  max-height: 100%;
+  background: var(--ivory);
+  border: 1px solid var(--line-soft);
+  display: flex; flex-direction: column;
+  transform: translateY(-0.75rem);
+  transition: transform 0.5s var(--ease);
+}
+.is-search-open .search__sheet { transform: none; }
+.search__bar {
+  display: flex; align-items: center; gap: 1rem;
+  padding: clamp(1rem, 2.5vw, 1.6rem) clamp(1.1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--line-soft);
+}
+.search__input {
+  flex: 1; min-width: 0;
+  font-family: var(--font-display); font-weight: 300;
+  font-size: clamp(1rem, 2.4vw, 1.375rem);
+  color: var(--fg); background: none; border: 0; outline: none;
+}
+.search__input::placeholder { color: var(--steel-soft); }
+.search__input::-webkit-search-cancel-button { display: none; }
+.search__close {
+  font-size: 0.625rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--rule);
+  padding: 0.35rem 0.6rem; flex: none;
+}
+.search__close:hover { color: var(--fg); }
+.search__hint {
+  padding: 0.9rem clamp(1.1rem, 3vw, 2rem);
+  font-size: 0.6875rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted);
+}
+.search__list { overflow-y: auto; border-top: 1px solid var(--line-soft); }
+.search__hit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.15rem 1.5rem;
+  padding: 0.9rem clamp(1.1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--line-soft);
+  transition: background 0.3s var(--ease);
+}
+.search__hit:hover, .search__hit.is-active { background: var(--bone); }
+.search__name {
+  grid-column: 1; font-size: 0.9375rem; line-height: 1.35; color: var(--fg);
+}
+.search__meta, .search__sku {
+  grid-column: 1;
+  font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--muted);
+}
+.search__sku { font-variant-numeric: tabular-nums; }
+.search__price {
+  grid-column: 2; grid-row: 1 / span 3; align-self: center;
+  font-size: 0.875rem; color: var(--fg); white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 720px) {
+  .search-btn__label { display: none; }
+  .search__price { grid-column: 1; grid-row: auto; }
 }

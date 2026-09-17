@@ -9,7 +9,7 @@
   <meta property="og:title" content="Мойка кухонная-магнитная MAGNETIC с сифоном 56*50см — Amana Group">
   <meta property="og:description" content="Мойка из коллекции Magnetic, врезной. Гранит искусственный. 5 отделок.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="assets/img/hero.jpg">
+  <meta property="og:image" content="https://www.amanagroup.org/assets/img/hero.jpg">
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="">
   <link rel="preload" href="assets/fonts/jost-200-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -39,6 +39,11 @@
       </nav>
 
       <div class="header__actions">
+        <button class="search-btn" type="button" data-search-open
+                aria-label="Поиск по каталогу" aria-expanded="false" aria-controls="search">
+          <span class="search-btn__icon" aria-hidden="true"></span>
+          <span class="search-btn__label">Поиск</span>
+        </button>
         <span class="num hide-sm">Краснодар</span>
         <a class="cart-link" href="cart.html" data-cart-link aria-label="Корзина">
           <span class="cart-link__label">Корзина</span>
@@ -62,10 +67,24 @@
       <a href="contact.html">Контакты</a>
     </nav>
     <div class="menu__foot">
+      <a href="#search" data-search-open>Поиск по артикулу</a>
       <a href="cart.html">Корзина</a>
       <span>Краснодар · Шоурум</span>
       <a href="mailto:amana@amanagroup.org">amana@amanagroup.org</a>
       <a href="tel:+79892669266">+7 989 266 9 266</a>
+    </div>
+  </div>
+
+  <div class="search" id="search" hidden>
+    <div class="search__sheet" role="dialog" aria-modal="true" aria-label="Поиск по каталогу">
+      <div class="search__bar">
+        <input class="search__input" type="search" data-search-input
+               placeholder="Артикул или название — ER2264, Silia, мойка"
+               autocomplete="off" spellcheck="false" aria-label="Поиск по каталогу">
+        <button class="search__close" type="button" data-search-close aria-label="Закрыть">Esc</button>
+      </div>
+      <p class="search__hint" data-search-hint>Ищем по артикулу и названию во всех брендах.</p>
+      <ul class="search__list" data-search-results></ul>
     </div>
   </div>
 
