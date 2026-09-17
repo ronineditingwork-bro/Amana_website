@@ -1701,3 +1701,73 @@ a:hover .media img,
   .search-btn__label { display: none; }
   .search__price { grid-column: 1; grid-row: auto; }
 }
+
+/* ------------------------------------------------- акция на главной */
+/* Тихая полоса под героем: тон кости, волосяные линии и ни одного
+   восклицательного знака. Скидка — единственное, что набрано крупно. */
+.promo {
+  background: var(--bone);
+  border-block: 1px solid var(--line-soft);
+}
+.promo__inner {
+  display: flex; align-items: baseline; flex-wrap: wrap;
+  gap: 0.75rem clamp(1.25rem, 3vw, 2.75rem);
+  padding-block: clamp(1.5rem, 3vw, 2.25rem);
+}
+.promo__when { flex: none; color: var(--muted); }
+.promo__line {
+  display: flex; align-items: baseline; flex-wrap: wrap;
+  gap: 0.5rem 0.75rem; margin-right: auto;
+}
+.promo__brand {
+  font-family: var(--font-display); font-weight: 300;
+  font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.promo__offer {
+  font-family: var(--font-display); font-weight: 300;
+  font-size: clamp(1.5rem, 3.4vw, 2.25rem);
+  line-height: 1; font-variant-numeric: tabular-nums;
+}
+.promo__text { font-size: 0.9375rem; color: var(--muted); }
+.promo__note {
+  flex: none; font-size: 0.6875rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--muted);
+}
+.promo__cta { flex: none; }
+@media (max-width: 720px) {
+  .promo__inner { align-items: flex-start; }
+  .promo__line { width: 100%; margin-right: 0; }
+  .promo__cta { margin-top: 0.25rem; }
+}
+
+/* Пульс акции: «тук-тук» и пауза, цикл 1,5 с — пульс спокойного сердца,
+   около 40 ударов. Точка задаёт такт, скидка отвечает вдохом на 3.5%. */
+@keyframes amana-beat {
+  0%, 42%, 100% { transform: scale(1); }
+  8%            { transform: scale(1.035); }
+  18%           { transform: scale(1); }
+  26%           { transform: scale(1.022); }
+  36%           { transform: scale(1); }
+}
+@keyframes amana-ping {
+  0%, 44%, 100% { box-shadow: 0 0 0 0 rgba(27, 27, 25, 0); }
+  8%            { box-shadow: 0 0 0 0 rgba(27, 27, 25, 0.3); }
+  40%           { box-shadow: 0 0 0 0.6rem rgba(27, 27, 25, 0); }
+}
+.promo__when { display: inline-flex; align-items: center; gap: 0.6rem; }
+.promo__pulse {
+  width: 0.4rem; aspect-ratio: 1; border-radius: 50%; flex: none;
+  background: var(--fg); position: relative;
+  animation: amana-beat 1.5s var(--ease) infinite;
+}
+.promo__pulse::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  animation: amana-ping 1.5s var(--ease) infinite;
+}
+.promo__offer { display: inline-block; transform-origin: left center; }
+.promo__offer[data-beat] { animation: amana-beat 1.5s var(--ease) infinite; }
+/* Кому движение мешает — тому статика: сердце не должно биться против воли */
+@media (prefers-reduced-motion: reduce) {
+  .promo__pulse, .promo__pulse::after, .promo__offer[data-beat] { animation: none; }
+}
