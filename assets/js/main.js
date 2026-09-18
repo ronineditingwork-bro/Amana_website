@@ -558,20 +558,63 @@
   }
 
   /* ------------------------------------------------------------------ form */
+  /* ---------------------------------------------------------------- форма */
+  // Сайт статический, письма отправлять некому. Если задан data-endpoint —
+  // отдаём заявку ему фоном; если нет — открываем письмо в почте гостя на
+  // адрес из data-mailto. Пустая кнопка хуже обоих вариантов.
   function setupForm() {
     var form = document.querySelector("[data-form]");
     if (!form) return;
     var status = form.querySelector(".form__status");
+    var button = form.querySelector("[type=submit]");
+
+    function say(key) {
+      if (!status) return;
+      status.textContent = status.dataset[key] || "";
+      status.classList.toggle("is-shown", !!status.textContent);
+    }
+
+    function letter() {
+      var to = form.dataset.mailto;
+      if (!to) return false;
+      var f = new FormData(form);
+      var LABEL = { name: "Имя", company: "Компания", email: "E-mail",
+                    phone: "Телефон", topic: "Тема", message: "Сообщение" };
+      var lines = [];
+      f.forEach(function (v, k) {
+        if (String(v).trim()) lines.push((LABEL[k] || k) + ": " + v);
+      });
+      var subject = "Заявка с сайта — " + (f.get("topic") || "Amana Group");
+      window.location.href = "mailto:" + to +
+        "?subject=" + encodeURIComponent(subject) +
+        "&body=" + encodeURIComponent(lines.join("\n"));
+      return true;
+    }
+
     form.addEventListener("submit", function (e) {
-      var endpoint = form.dataset.endpoint;
-      if (endpoint) return; // let the configured backend handle it
       e.preventDefault();
       if (!form.reportValidity()) return;
-      if (status) {
-        status.textContent = status.dataset.unconfigured;
-        status.classList.add("is-shown");
+      var endpoint = form.dataset.endpoint;
+      if (!endpoint) {
+        say(letter() ? "mail" : "failed");
+        return;
       }
-      console.warn("[amana] Contact form has no endpoint. Set data-endpoint on the <form> element.");
+      say("sending");
+      if (button) button.disabled = true;
+      fetch(endpoint, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" }
+      }).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        form.reset();
+        say("sent");
+      }).catch(function () {
+        // не дошло — не теряем заявку, отдаём её почте гостя
+        say(letter() ? "mail" : "failed");
+      }).then(function () {
+        if (button) button.disabled = false;
+      });
     });
   }
 

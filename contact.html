@@ -119,7 +119,8 @@
         </div>
 
         <div style="grid-column: 6 / span 7">
-          <form class="form" data-form data-endpoint="" novalidate>
+          <form class="form" data-form data-endpoint=""
+                data-mailto="amana@amanagroup.org" novalidate>
             <div class="form__row">
               <div class="field">
                 <label for="f-name">Имя</label>
@@ -157,7 +158,11 @@
 
             <div class="btn-row" style="align-items:center;gap:2rem">
               <button class="btn btn--solid" type="submit">Отправить <i class="arrow"></i></button>
-              <p class="form__status" data-unconfigured="Форма готова к подключению: укажите адрес обработчика в атрибуте data-endpoint у элемента &lt;form&gt;. До этого сообщения никуда не уходят."></p>
+              <p class="form__status"
+                 data-sending="Отправляем…"
+                 data-sent="Заявка ушла. Ответим в течение рабочего дня."
+                 data-failed="Не отправилось. Напишите на amana@amanagroup.org или позвоните +7 989 266 9 266."
+                 data-mail="Письмо открылось в вашей почте — осталось нажать «Отправить»."></p>
             </div>
 
             <p class="form__note">
