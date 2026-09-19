@@ -1,0 +1,54 @@
+<svg class="node__draw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3200 3060" role="img" aria-label="Разрез узла: основание, гидроизоляция, клей, керамогранит 10 мм, затирка шва 2 мм и герметик в примыкании пола к стене">
+<defs><pattern id="node-hatch" width="90" height="90" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="90" stroke="currentColor" stroke-width="5" opacity=".3"/></pattern></defs>
+<g fill="none" stroke="currentColor" stroke-linecap="square">
+<path d="M300 300 H1100 V1700 H2900 V2100 H300 Z" fill="url(#node-hatch)" stroke="none"/>
+<path d="M300 300 H1100 V1700 H2900 V2100 H300 Z" stroke-width="8" opacity=".5"/>
+<path d="M1100 300 V1700 H2900" stroke-width="7" opacity=".55"/>
+<path d="M1140 300 V1660 H2900" stroke-width="7" opacity=".55"/>
+<rect x="1140" y="300" width="160" height="960" stroke-width="6" opacity=".45"/>
+<rect x="1140" y="1500" width="1760" height="160" stroke-width="6" opacity=".45"/>
+<rect x="1300" y="300" width="200" height="400" stroke-width="8" opacity=".65"/>
+<rect x="1300" y="740" width="200" height="520" stroke-width="8" opacity=".65"/>
+<rect x="1140" y="1300" width="1160" height="200" stroke-width="8" opacity=".65"/>
+<rect x="2340" y="1300" width="560" height="200" stroke-width="8" opacity=".65"/>
+<rect x="1300" y="700" width="200" height="40" fill="currentColor" fill-opacity=".38" stroke="none"/>
+<rect x="2300" y="1300" width="40" height="200" fill="currentColor" fill-opacity=".38" stroke="none"/>
+<rect x="1140" y="1260" width="360" height="40" fill="currentColor" fill-opacity=".38" stroke="none"/>
+<polyline points="300,2100 346,1936 254,1773 346,1609 254,1445 346,1282 254,1118 346,955 254,791 346,627 254,464 300,300" stroke-width="6" opacity=".4"/>
+<polyline points="300,300 471,346 643,254 814,346 986,254 1157,346 1329,254 1500,300" stroke-width="6" opacity=".4"/>
+<polyline points="2900,1300 2854,1414 2946,1529 2854,1643 2946,1757 2854,1871 2946,1986 2900,2100" stroke-width="6" opacity=".4"/>
+<line x1="700" y1="1000" x2="1900" y2="420" stroke-width="5" opacity=".35"/>
+<circle cx="700" cy="1000" r="16" fill="currentColor" fill-opacity=".5" stroke="none"/>
+<circle cx="1900" cy="420" r="80" stroke-width="6" fill="var(--bg, #f7f5f1)" fill-opacity="1" stroke-opacity=".45"/>
+<line x1="1120" y1="880" x2="2250" y2="560" stroke-width="5" opacity=".35"/>
+<circle cx="1120" cy="880" r="16" fill="currentColor" fill-opacity=".5" stroke="none"/>
+<circle cx="2250" cy="560" r="80" stroke-width="6" fill="var(--bg, #f7f5f1)" fill-opacity="1" stroke-opacity=".45"/>
+<line x1="1220" y1="1000" x2="2560" y2="700" stroke-width="5" opacity=".35"/>
+<circle cx="1220" cy="1000" r="16" fill="currentColor" fill-opacity=".5" stroke="none"/>
+<circle cx="2560" cy="700" r="80" stroke-width="6" fill="var(--bg, #f7f5f1)" fill-opacity="1" stroke-opacity=".45"/>
+<line x1="1400" y1="1120" x2="2850" y2="840" stroke-width="5" opacity=".35"/>
+<circle cx="1400" cy="1120" r="16" fill="currentColor" fill-opacity=".5" stroke="none"/>
+<circle cx="2850" cy="840" r="80" stroke-width="6" fill="var(--bg, #f7f5f1)" fill-opacity="1" stroke-opacity=".45"/>
+<line x1="2320" y1="1420" x2="2850" y2="1120" stroke-width="5" opacity=".35"/>
+<circle cx="2320" cy="1420" r="16" fill="currentColor" fill-opacity=".5" stroke="none"/>
+<circle cx="2850" cy="1120" r="80" stroke-width="6" fill="var(--bg, #f7f5f1)" fill-opacity="1" stroke-opacity=".45"/>
+<line x1="1340" y1="1280" x2="1780" y2="1215" stroke-width="5" opacity=".35"/>
+<circle cx="1340" cy="1280" r="16" fill="currentColor" fill-opacity=".5" stroke="none"/>
+<circle cx="1780" cy="1215" r="80" stroke-width="6" fill="var(--bg, #f7f5f1)" fill-opacity="1" stroke-opacity=".45"/>
+</g>
+<g fill="currentColor" stroke="none" font-family="Jost, Futura, sans-serif">
+<text x="1900" y="446" text-anchor="middle" font-size="68" letter-spacing="0" opacity=".6">1</text>
+<text x="2250" y="586" text-anchor="middle" font-size="68" letter-spacing="0" opacity=".6">2</text>
+<text x="2560" y="726" text-anchor="middle" font-size="68" letter-spacing="0" opacity=".6">3</text>
+<text x="2850" y="866" text-anchor="middle" font-size="68" letter-spacing="0" opacity=".6">4</text>
+<text x="2850" y="1146" text-anchor="middle" font-size="68" letter-spacing="0" opacity=".6">5</text>
+<text x="1780" y="1241" text-anchor="middle" font-size="68" letter-spacing="0" opacity=".6">6</text>
+<text x="300" y="2350" text-anchor="start" font-size="66" letter-spacing="6" opacity=".45">1 — основание: штукатурка или стяжка</text>
+<text x="300" y="2468" text-anchor="start" font-size="66" letter-spacing="6" opacity=".45">2 — гидроизоляция, заведена со стены на пол</text>
+<text x="300" y="2586" text-anchor="start" font-size="66" letter-spacing="6" opacity=".45">3 — клей для крупноформата, слой 3—15 мм</text>
+<text x="300" y="2704" text-anchor="start" font-size="66" letter-spacing="6" opacity=".45">4 — керамогранит 10 мм</text>
+<text x="300" y="2822" text-anchor="start" font-size="66" letter-spacing="6" opacity=".45">5 — затирка шва 2 мм</text>
+<text x="300" y="2940" text-anchor="start" font-size="66" letter-spacing="6" opacity=".45">6 — герметик в примыкании, шов не затирается</text>
+<text x="3140" y="2350" text-anchor="end" font-size="66" letter-spacing="16" opacity=".45">УЗЕЛ 1</text>
+</g>
+</svg>
