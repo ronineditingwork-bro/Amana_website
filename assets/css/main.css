@@ -1771,3 +1771,21 @@ a:hover .media img,
 @media (prefers-reduced-motion: reduce) {
   .promo__pulse, .promo__pulse::after, .promo__offer[data-beat] { animation: none; }
 }
+
+/* --------------------------------------------------------------- чертёж */
+/* Схема раскладки под заголовком «О нас»: левая колонка обрывалась на двух
+   строках, пока правая шла на три пункта — низ блока пустовал только слева. */
+.plan {
+  margin: clamp(2.5rem, 5vw, 4.5rem) 0 0;
+  max-width: 30rem;
+  color: var(--fg);
+}
+.plan__draw { display: block; width: 100%; height: auto; }
+.plan figcaption {
+  margin-top: 1.25rem;
+  font-size: 0.6875rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted);
+}
+@media (max-width: 900px) {
+  .plan { max-width: 20rem; margin-inline: auto; }
+}
