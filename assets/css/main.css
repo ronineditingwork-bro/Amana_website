@@ -355,19 +355,7 @@ html:not(.js) .header {
   transform: rotate(45deg);
 }
 .btn:hover { gap: 1.5rem; }
-.btn--solid {
-  border: 1px solid currentColor;
-  padding: 1.05rem clamp(1.1rem, 4vw, 1.75rem);
-}
-.btn--solid::before {
-  content: ""; position: absolute; inset: 0; background: currentColor;
-  transform: scaleY(0); transform-origin: bottom;
-  transition: transform 0.7s var(--ease);
-  z-index: -1;
-}
-.btn--solid { z-index: 0; isolation: isolate; }
-.btn--solid:hover::before { transform: scaleY(1); }
-.btn--solid:hover { color: var(--bg); }
+/* Вариант в рамке снят: кнопки на сайте одинаковые — подчёркивание и стрелка. */
 .btn-row { display: flex; flex-wrap: wrap; gap: clamp(1.5rem, 3vw, 3rem); align-items: center; }
 
 /* ------------------------------------------------------------------ media */
@@ -1053,7 +1041,7 @@ a:hover .media img,
 .qty input:focus { outline: none; background: var(--bone); }
 
 .buy { display: flex; gap: 1rem; align-items: stretch; flex-wrap: wrap; }
-.buy .btn--solid { flex: 1 1 12rem; justify-content: space-between; }
+.buy .btn { flex: 1 1 12rem; justify-content: space-between; }
 
 /* названия поставщика длинные — в карточке товара свой, более спокойный кегль */
 .pdp__title {
