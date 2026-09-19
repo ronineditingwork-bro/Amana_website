@@ -356,14 +356,6 @@ html:not(.js) .header {
 }
 .btn:hover { gap: 1.5rem; }
 /* Вариант в рамке снят: кнопки на сайте одинаковые — подчёркивание и стрелка. */
-/* Ловушка для ботов: убираем из потока и из поля зрения, но не через
-   display:none — его самые примитивные спам-скрипты как раз и пропускают. */
-.hp {
-  position: absolute; width: 1px; height: 1px;
-  margin: -1px; padding: 0; border: 0;
-  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
-}
-
 .btn-row { display: flex; flex-wrap: wrap; gap: clamp(1.5rem, 3vw, 3rem); align-items: center; }
 
 /* ------------------------------------------------------------------ media */
