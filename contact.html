@@ -121,6 +121,14 @@
         <div style="grid-column: 6 / span 7">
           <form class="form" data-form data-endpoint=""
                 data-mailto="amana@amanagroup.org" novalidate>
+            <!-- Ловушка для ботов: поле спрятано от людей и от экранных
+                 читалок, заполнить его может только автомат. Заявку с ним
+                 приёмник молча выбрасывает. -->
+            <div class="hp" aria-hidden="true">
+              <label for="f-check">Сайт</label>
+              <input id="f-check" name="amana_check" type="text"
+                     tabindex="-1" autocomplete="off">
+            </div>
             <div class="form__row">
               <div class="field">
                 <label for="f-name">Имя</label>
