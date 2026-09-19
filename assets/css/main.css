@@ -29,7 +29,7 @@
 
   --gutter:  clamp(1.25rem, 4.6vw, 5.5rem);
   --measure: 1720px;
-  --section: clamp(5.5rem, 13vw, 13.5rem);
+  --section: clamp(4rem, 9vw, 9.5rem);
   --ease:    cubic-bezier(0.16, 1, 0.3, 1);
   --ease-io: cubic-bezier(0.62, 0.05, 0.2, 1);
 
@@ -789,9 +789,27 @@ a:hover .media img,
 }
 .page-head--split > :first-child { grid-column: 1 / span 7; }
 .page-head--split > :last-child  { grid-column: 9 / span 4; }
+
+/* Лид держался нижней кромкой заголовка и уезжал вверх, к хлебным крошкам.
+   Распускаем обёртку в саму сетку: тогда лид попадает в одну строку с h1
+   и начинается ровно там же, а не на глаз. */
+@supports selector(:has(*)) {
+  .page-head--split > :first-child:has(> .page-head__title) { display: contents; }
+  .page-head--split > :first-child > .crumbs { grid-column: 1 / span 7; grid-row: 1; }
+  .page-head--split > :first-child > .page-head__title {
+    grid-column: 1 / span 7; grid-row: 2; align-self: start;
+  }
+  .page-head--split:has(> :first-child > .page-head__title) > :last-child {
+    grid-row: 2; align-self: start;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);   /* тот же отступ, что у h1 */
+  }
+}
 @media (max-width: 900px) {
   .page-head--split { display: block; }
-  .page-head--split > :last-child { margin-top: 2rem; }
+  .page-head--split > :last-child,
+  .page-head--split:has(> :first-child > .page-head__title) > :last-child {
+    margin-top: 2rem;
+  }
 }
 
 .crumbs {
@@ -1224,8 +1242,8 @@ a:hover .media img,
   font-family: var(--font-display); font-size: 1.25rem !important;
 }
 .offer__foot {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
-  margin-top: 2.5rem; padding-top: 1.5rem;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 2rem; margin-top: 2.5rem; padding-top: 1.5rem;
   border-top: 1px solid rgba(21, 21, 15, 0.16);
   font-size: 0.8125rem; color: #56564e;
 }
@@ -1233,7 +1251,6 @@ a:hover .media img,
   font-family: var(--font-display); font-size: 0.625rem; letter-spacing: 0.2em;
   text-transform: uppercase; color: #15150f; margin-bottom: 0.6rem;
 }
-.offer__sign { border-bottom: 1px solid rgba(21, 21, 15, 0.3); height: 2.2rem; }
 @media (max-width: 700px) { .offer__foot { grid-template-columns: 1fr; } }
 
 /* ------------------------------------------------------------------ печать */
