@@ -155,6 +155,38 @@
             </p>
           </div>
         </div>
+
+        <div style="margin-top:clamp(3rem,6vw,5rem);max-width:760px">
+          <p class="eyebrow">Отправить менеджеру</p>
+          <h2 class="h2" style="margin-top:1rem">Оформить заказ.</h2>
+          <p class="muted measure" style="margin-top:1rem">
+            Состав корзины, количество и итоговая сумма уйдут менеджеру AMANA в Telegram.
+          </p>
+          <form class="form" data-order-form style="margin-top:2rem">
+            <div class="form__row">
+              <div class="field">
+                <label for="order-name">Имя</label>
+                <input id="order-name" name="name" type="text" autocomplete="name" required>
+              </div>
+              <div class="field">
+                <label for="order-phone">Телефон</label>
+                <input id="order-phone" name="phone" type="tel" autocomplete="tel" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="order-email">E-mail</label>
+              <input id="order-email" name="email" type="email" autocomplete="email">
+            </div>
+            <div class="field">
+              <label for="order-comment">Комментарий</label>
+              <textarea id="order-comment" name="comment" rows="3" placeholder="Адрес, сроки, удобное время для звонка"></textarea>
+            </div>
+            <div class="btn-row" style="align-items:center;gap:2rem">
+              <button class="btn" type="submit">Отправить заказ <i class="arrow"></i></button>
+              <p class="form__status" data-order-status></p>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
   </main>
