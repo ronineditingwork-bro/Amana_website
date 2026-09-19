@@ -562,6 +562,32 @@
   // Сайт статический, письма отправлять некому. Если задан data-endpoint —
   // отдаём заявку ему фоном; если нет — открываем письмо в почте гостя на
   // адрес из data-mailto. Пустая кнопка хуже обоих вариантов.
+  function setupLeadContext() {
+    var form = document.querySelector("[data-form]");
+    var q = new URLSearchParams(location.search);
+
+    // На карточке товара превращаем «запросите расчёт» в контекстную заявку.
+    var pdp = document.querySelector(".pdp[data-product]");
+    if (pdp) {
+      var ask = pdp.querySelector('a[href="contact.html"]');
+      if (ask) {
+        var sku = pdp.querySelector("[data-sku-label]");
+        ask.href = "contact.html?topic=price&product=" +
+          encodeURIComponent(pdp.dataset.name || document.title) +
+          "&sku=" + encodeURIComponent(sku ? sku.textContent.trim() : "");
+      }
+    }
+
+    if (!form) return;
+    var topic = form.querySelector('[name="topic"]');
+    var message = form.querySelector('[name="message"]');
+    if (q.get("topic") === "price" && topic) topic.value = "Запрос цены";
+    var product = q.get("product"), sku = q.get("sku");
+    if (product && message && !message.value) {
+      message.value = "Товар: " + product + (sku ? "\nАртикул: " + sku : "");
+    }
+  }
+
   function setupForm() {
     var form = document.querySelector("[data-form]");
     if (!form) return;
@@ -599,18 +625,45 @@
         say(letter() ? "mail" : "failed");
         return;
       }
+
+      var f = new FormData(form);
+      var topic = String(f.get("topic") || "Заявка");
+      var generic = {
+        source: "AMANA GROUP",
+        type: topic === "Запрос цены" ? "price_request" :
+              topic === "Обратный звонок" ? "callback" : "lead",
+        name: String(f.get("name") || ""),
+        company: String(f.get("company") || ""),
+        email: String(f.get("email") || ""),
+        phone: String(f.get("phone") || ""),
+        topic: topic,
+        message: String(f.get("message") || ""),
+        page: location.href
+      };
+
+      // Поля ниже сохраняют совместимость с уже работающим Telegram Worker.
+      var payload = Object.assign({}, generic, {
+        brand: "AMANA GROUP",
+        model: generic.company || generic.email || "Клиент сайта",
+        service: topic,
+        date: new Date().toLocaleDateString("ru-RU"),
+        plate: generic.email,
+        mileage: "",
+        comment: [generic.message, "Источник: " + location.href].filter(Boolean).join("\n")
+      });
+
       say("sending");
       if (button) button.disabled = true;
+
       fetch(endpoint, {
         method: "POST",
-        body: new FormData(form),
-        headers: { Accept: "application/json" }
-      }).then(function (r) {
-        if (!r.ok) throw new Error(r.status);
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=UTF-8" },
+        body: JSON.stringify(payload)
+      }).then(function () {
         form.reset();
         say("sent");
       }).catch(function () {
-        // не дошло — не теряем заявку, отдаём её почте гостя
         say(letter() ? "mail" : "failed");
       }).then(function () {
         if (button) button.disabled = false;
@@ -630,6 +683,7 @@
     setupCatalog();
     setupCollectionFilter();
     setupSwatches();
+    setupLeadContext();
     setupForm();
   }
 
