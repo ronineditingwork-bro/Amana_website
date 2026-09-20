@@ -276,77 +276,6 @@
     if (clear) clear.addEventListener("click", function () { write([]); });
   }
 
-  /* --------------------------------------------------------- заявка из корзины */
-  function bindOrder() {
-    var form = document.querySelector("[data-order-form]");
-    if (!form) return;
-    var status = form.querySelector("[data-order-status]");
-    var button = form.querySelector("[type=submit]");
-    var endpoint = "https://luxauto-5588.pleshkovaleksey.workers.dev/";
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      if (!form.reportValidity()) return;
-      var list = read();
-      if (!list.length) {
-        if (status) status.textContent = "Корзина пуста.";
-        return;
-      }
-
-      var f = new FormData(form);
-      var t = totals(list);
-      var lines = list.map(function (i, n) {
-        return (n + 1) + ". " + i.name + " · " + i.sku +
-          (i.colorName ? " · " + i.colorName : "") +
-          " · " + i.qty + " шт. · " + money(i.price * i.qty);
-      });
-
-      var name = String(f.get("name") || "");
-      var phone = String(f.get("phone") || "");
-      var email = String(f.get("email") || "");
-      var comment = String(f.get("comment") || "");
-      var detail = ["AMANA GROUP — новый заказ из корзины"]
-        .concat(lines)
-        .concat(["Итого: " + money(t.sum), comment ? "Комментарий: " + comment : "", "Источник: " + location.href])
-        .filter(Boolean)
-        .join("\n");
-
-      var payload = {
-        source: "AMANA GROUP",
-        type: "order",
-        name: name,
-        phone: phone,
-        email: email,
-        items: list,
-        total: t.sum,
-        page: location.href,
-        brand: "AMANA GROUP",
-        model: "Корзина · " + t.count + " поз.",
-        service: "Новый заказ",
-        date: new Date().toLocaleDateString("ru-RU"),
-        plate: email,
-        mileage: "",
-        comment: detail
-      };
-
-      if (status) status.textContent = "Отправляем заказ…";
-      if (button) button.disabled = true;
-      fetch(endpoint, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=UTF-8" },
-        body: JSON.stringify(payload)
-      }).then(function () {
-        if (status) status.textContent = "Заказ отправлен менеджеру AMANA в Telegram. Мы свяжемся с вами.";
-        form.reset();
-      }).catch(function () {
-        if (status) status.textContent = "Не удалось отправить. Позвоните: +7 989 266 9 266.";
-      }).then(function () {
-        if (button) button.disabled = false;
-      });
-    });
-  }
-
   /* -------------------------------------------------- коммерческое предложение */
   function renderOffer() {
     var root = document.querySelector("[data-offer-root]");
@@ -410,7 +339,6 @@
   function init() {
     bindShowcase();
     bindCart();
-    bindOrder();
     bindOffer();
     renderCart();
     renderOffer();
