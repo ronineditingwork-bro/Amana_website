@@ -1014,31 +1014,27 @@ a:hover .media img,
 
 /* --------------------------------------------------------- кнопка «в корзину» */
 /* Кнопка — действие, а не подпись: полный контраст и площадь под палец. */
+/* Кнопка в карточке — без рамки, как остальные кнопки сайта: подчёркивание
+   и знак справа. Рамка делала её единственным элементом в коробке. */
 .add {
   margin-top: auto; width: 100%;
   display: flex; align-items: center; justify-content: space-between;
   min-height: 2.75rem;
-  padding: 0.8rem 0.9rem;
+  padding: 0.8rem 0 0.7rem;
   margin-block-start: 1.1rem;
-  border: 1px solid var(--rule);
+  border-bottom: 1px solid currentColor;
   font-family: var(--font-display); font-size: 0.6875rem;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--fg);
-  position: relative; isolation: isolate;
-  transition: color 0.45s var(--ease), border-color 0.45s var(--ease);
+  position: relative;
+  transition: opacity 0.45s var(--ease);
 }
-.add::before {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background: var(--fg);
-  transform: scaleY(0); transform-origin: bottom;
-  transition: transform 0.5s var(--ease);
-}
-.add:hover { color: var(--bg); border-color: var(--fg); }
-.add:hover::before { transform: scaleY(1); }
+.add:hover { opacity: 0.55; }
 .add__plus { font-size: 0.9rem; line-height: 1; transition: transform 0.5s var(--ease); }
 .add:hover .add__plus { transform: rotate(90deg); }
-.add.is-added { color: var(--bg); border-color: var(--fg); }
-.add.is-added::before { transform: scaleY(1); }
+/* «Добавлено» говорит сама надпись — её меняет скрипт; знак доворачивается
+   в крестик, а заливки, которая держалась на рамке, больше нет */
+.add.is-added { opacity: 1; }
 .add.is-added .add__plus { transform: rotate(45deg); }
 
 /* ------------------------------------------------------------ счётчик кол-ва */
