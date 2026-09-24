@@ -799,6 +799,11 @@ a:hover .media img,
   .page-head--split > :first-child > .page-head__title {
     grid-column: 1 / span 7; grid-row: 2; align-self: start;
   }
+  /* всё остальное из распущенной обёртки — под заголовок, в ту же колонку:
+     иначе подзаголовок уезжает в правый столбец к лиду */
+  .page-head--split > :first-child > :not(.crumbs):not(.page-head__title) {
+    grid-column: 1 / span 7;
+  }
   .page-head--split:has(> :first-child > .page-head__title) > :last-child {
     grid-row: 2; align-self: start;
     margin-top: clamp(1.5rem, 3vw, 2.5rem);   /* тот же отступ, что у h1 */
@@ -1036,6 +1041,57 @@ a:hover .media img,
    в крестик, а заливки, которая держалась на рамке, больше нет */
 .add.is-added { opacity: 1; }
 .add.is-added .add__plus { transform: rotate(45deg); }
+
+/* --------------------------------------------- расчёт коробок на странице
+   Керамогранит продаётся коробками, а считают его метрами. Этот блок делает
+   пересчёт на месте, чтобы гость не звонил за арифметикой. */
+.calc {
+  margin-block: clamp(1.75rem, 3vw, 2.5rem);
+  padding-top: 1.5rem; border-top: 1px solid var(--rule);
+}
+.calc__field { display: grid; gap: 0.5rem; margin-top: 1rem; max-width: 12rem; }
+.calc__field span {
+  font-family: var(--font-display); font-size: 0.625rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+}
+.calc__field input {
+  border: 0; border-bottom: 1px solid var(--rule); background: none;
+  padding: 0.45rem 0; font-size: 1.125rem; border-radius: 0;
+  transition: border-color 0.4s var(--ease);
+}
+.calc__field input:focus { outline: none; border-color: var(--fg); }
+.calc__out {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 2rem; margin: 1.5rem 0 0;
+}
+.calc__out div { display: grid; gap: 0.3rem; }
+.calc__out dt {
+  font-family: var(--font-display); font-size: 0.625rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+}
+.calc__out dd { margin: 0; font-family: var(--font-display); font-size: 1.05rem; }
+.calc__note { margin-top: 1.25rem; font-size: 0.8125rem; max-width: 34ch; }
+
+/* ------------------------------------------- соседние артикулы коллекции */
+.sibs {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0; border-top: 1px solid var(--rule);
+}
+.sib {
+  display: grid; gap: 0.35rem;
+  padding: 1.25rem 1.5rem 1.35rem 0;
+  border-bottom: 1px solid var(--rule);
+  transition: opacity 0.4s var(--ease);
+}
+.sib:hover { opacity: 0.55; }
+.sib__fmt { font-family: var(--font-display); font-size: 1.05rem; }
+.sib__finish {
+  font-family: var(--font-display); font-size: 0.625rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+}
+.sib__name { font-size: 0.8125rem; color: var(--muted); }
+.sib__price { font-family: var(--font-display); font-size: 0.9375rem; margin-top: 0.35rem; }
+@media (max-width: 600px) { .calc__out { grid-template-columns: minmax(0, 1fr); } }
 
 /* ------------------------------------------------------------ счётчик кол-ва */
 .qty {

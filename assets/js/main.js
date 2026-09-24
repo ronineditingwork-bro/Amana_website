@@ -562,6 +562,46 @@
   // Сайт статический, письма отправлять некому. Если задан data-endpoint —
   // отдаём заявку ему фоном; если нет — открываем письмо в почте гостя на
   // адрес из data-mailto. Пустая кнопка хуже обоих вариантов.
+  /* Расчёт коробок на странице артикула. Плитку заказывают метрами, а
+     отгружают коробками, поэтому считаем и остаток: он всё равно будет. */
+  function setupCalc() {
+    var box = document.querySelector("[data-calc]");
+    if (!box) return;
+    var perBox = parseFloat(box.dataset.box);
+    var rate = parseFloat(box.dataset.rate);
+    var area = box.querySelector("[data-calc-area]");
+    var out = box.querySelector("[data-calc-out]");
+    if (!perBox || !rate || !area || !out) return;
+
+    var cells = {
+      boxes: box.querySelector("[data-calc-boxes]"),
+      total: box.querySelector("[data-calc-total]"),
+      extra: box.querySelector("[data-calc-extra]"),
+      sum: box.querySelector("[data-calc-sum]")
+    };
+
+    function nice(x, digits) {
+      return x.toFixed(digits === undefined ? 2 : digits)
+        .replace(/\.?0+$/, "").replace(".", ",");
+    }
+
+    function money(x) {
+      return Math.round(x).toLocaleString("ru-RU").replace(/\u00a0/g, "\u2009") + " \u20bd";
+    }
+
+    area.addEventListener("input", function () {
+      var v = parseFloat(area.value.replace(",", "."));
+      if (!isFinite(v) || v <= 0) { out.hidden = true; return; }
+      var boxes = Math.ceil(v / perBox);
+      var total = boxes * perBox;
+      out.hidden = false;
+      cells.boxes.textContent = boxes;
+      cells.total.textContent = nice(total) + " м²";
+      cells.extra.textContent = nice(total - v) + " м²";
+      cells.sum.textContent = money(total * rate);
+    });
+  }
+
   function setupForm() {
     var form = document.querySelector("[data-form]");
     if (!form) return;
@@ -631,6 +671,7 @@
     setupCollectionFilter();
     setupSwatches();
     setupForm();
+    setupCalc();
   }
 
   if (document.readyState === "loading") {
