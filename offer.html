@@ -98,13 +98,22 @@
         </div>
         <div>
           <p class="muted" data-reveal="up">
-            Заполните поля заказчика и распечатайте документ или сохраните
-            его в PDF — в диалоге печати выберите «Сохранить как PDF».
+            Заполните поля заказчика и отправьте предложение менеджеру —
+            или распечатайте документ, выбрав в диалоге печати «Сохранить как PDF».
           </p>
           <div class="btn-row" style="margin-top:1.75rem">
+            <button class="btn" type="button" data-offer-send
+                    data-endpoint=""
+                    data-mailto="amana@amanagroup.org">Отправить заявку <i class="arrow"></i></button>
             <button class="btn" type="button" data-offer-print>Печать / PDF <i class="arrow"></i></button>
             <a class="btn" href="cart.html">Изменить состав <i class="arrow"></i></a>
           </div>
+          <p class="form__status" data-offer-status style="margin-top:1.25rem"
+             data-need="Укажите телефон или e-mail — иначе менеджеру некуда ответить."
+             data-sending="Отправляем…"
+             data-sent="Заявка ушла вместе с составом предложения. Ответим в течение рабочего дня."
+             data-failed="Не отправилось. Напишите на amana@amanagroup.org или позвоните +7 989 266 9 266."
+             data-mail="Письмо с предложением открылось в вашей почте — осталось нажать «Отправить»."></p>
         </div>
       </div>
     </section>
@@ -134,9 +143,12 @@
         </header>
 
         <section class="offer__client">
-          <label><span>Заказчик</span><input type="text" placeholder="Компания или ФИО"></label>
-          <label><span>Объект</span><input type="text" placeholder="Название объекта, адрес"></label>
-          <label><span>Контакт</span><input type="text" placeholder="Телефон или e-mail"></label>
+          <label><span>Заказчик</span><input type="text" placeholder="Компания или ФИО"
+                 autocomplete="organization" data-offer-field="client"></label>
+          <label><span>Объект</span><input type="text" placeholder="Название объекта, адрес"
+                 data-offer-field="object"></label>
+          <label><span>Контакт</span><input type="text" placeholder="Телефон или e-mail"
+                 autocomplete="tel" data-offer-field="contact"></label>
         </section>
 
         <table class="offer__table">
@@ -248,7 +260,7 @@
 
   <div class="veil" aria-hidden="true"></div>
   <script src="assets/js/main.js?v=f05be5cd" defer></script>
-  <script src="assets/js/shop.js?v=1946e7bc" defer></script>
+  <script src="assets/js/shop.js?v=d057fc9d" defer></script>
 
 </body>
 </html>

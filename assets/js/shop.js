@@ -330,9 +330,103 @@
     }
   }
 
+  /* Отправка предложения менеджеру.
+
+     Состав корзины живёт только в браузере, поэтому заявку собирает
+     страница: номер КП, поля заказчика и позиции уходят одним текстом.
+     Адрес приёмника подставляет сборка (tools/build_pages.py, FORM_ENDPOINT);
+     пока он пуст — открывается почта гостя с тем же текстом, чтобы заявка
+     не пропала. */
+  var OFFER_LINES = 25;          // строк позиций в сообщении, дальше — счётчик
+
+  function offerField(name) {
+    var el = document.querySelector('[data-offer-field="' + name + '"]');
+    return el ? el.value.trim() : "";
+  }
+
+  function offerText() {
+    var list = read();
+    if (!list.length) return null;
+    var t = totals(list);
+    var lines = list.slice(0, OFFER_LINES).map(function (i, n) {
+      return (n + 1) + ". " + i.sku + " — " + i.name +
+        (i.colorName ? " (" + i.colorName + ")" : "") +
+        " · " + i.qty + (i.pack ? " кор." : " шт.") +
+        " × " + money(i.price) + " = " + money(i.price * i.qty);
+    });
+    if (list.length > OFFER_LINES) {
+      lines.push("…и ещё " + (list.length - OFFER_LINES) + " поз.");
+    }
+    var num = document.querySelector("[data-offer-number]");
+    return {
+      offer: (num ? num.textContent.trim() : "") || "без номера",
+      client: offerField("client"),
+      object: offerField("object"),
+      contact: offerField("contact"),
+      positions: lines.join("\n"),
+      total: money(t.sum) + " за " + t.count + " шт. в " + list.length + " поз."
+    };
+  }
+
+  function offerLetter(to, data) {
+    if (!to) return false;
+    var LABEL = { offer: "КП", client: "Заказчик", object: "Объект",
+                  contact: "Контакт", positions: "Состав", total: "Итого" };
+    var body = Object.keys(LABEL).filter(function (k) { return data[k]; })
+      .map(function (k) { return LABEL[k] + ":\n" + data[k]; }).join("\n\n");
+    window.location.href = "mailto:" + to +
+      "?subject=" + encodeURIComponent("Заявка по КП " + data.offer) +
+      "&body=" + encodeURIComponent(body);
+    return true;
+  }
+
   function bindOffer() {
     var print = document.querySelector("[data-offer-print]");
     if (print) print.addEventListener("click", function () { window.print(); });
+
+    var send = document.querySelector("[data-offer-send]");
+    if (!send) return;
+    var status = document.querySelector("[data-offer-status]");
+
+    function say(key) {
+      if (!status) return;
+      status.textContent = status.dataset[key] || "";
+      status.classList.toggle("is-shown", !!status.textContent);
+    }
+
+    send.addEventListener("click", function () {
+      var data = offerText();
+      if (!data) return;
+      if (!data.contact) {
+        say("need");
+        var el = document.querySelector('[data-offer-field="contact"]');
+        if (el) el.focus();
+        return;
+      }
+      var endpoint = send.dataset.endpoint;
+      var mail = send.dataset.mailto;
+      if (!endpoint) {
+        say(offerLetter(mail, data) ? "mail" : "failed");
+        return;
+      }
+      var body = new FormData();
+      body.append("topic", "Заявка по КП " + data.offer);
+      Object.keys(data).forEach(function (k) {
+        if (data[k]) body.append(k, data[k]);
+      });
+      say("sending");
+      send.disabled = true;
+      fetch(endpoint, { method: "POST", body: body, headers: { Accept: "application/json" } })
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.status);
+          say("sent");
+        })
+        .catch(function () {
+          // не дошло — отдаём заявку почте гостя, чтобы она не пропала
+          say(offerLetter(mail, data) ? "mail" : "failed");
+        })
+        .then(function () { send.disabled = false; });
+    });
   }
 
   /* ------------------------------------------------------------------ старт */
