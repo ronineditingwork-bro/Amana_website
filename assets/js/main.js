@@ -607,8 +607,22 @@
   }
 
   function setupForm() {
-    var form = document.querySelector("[data-form]");
-    if (!form) return;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-form]"), bindForm);
+  }
+
+  // Скрытые поля с контекстом (артикул, цена, отделка, количество, итог
+  // корзины) заполняются в момент отправки: покупатель успевает переключить
+  // отделку и количество, и в заявку должно уйти то, что он видит сейчас.
+  function fillContext(form) {
+    Array.prototype.forEach.call(form.querySelectorAll("[data-from]"), function (input) {
+      var src = document.querySelector(input.dataset.from);
+      if (!src) return;
+      var v = "value" in src && src.value !== undefined ? src.value : src.textContent;
+      input.value = String(v || "").replace(/\s+/g, " ").trim();
+    });
+  }
+
+  function bindForm(form) {
     var status = form.querySelector(".form__status");
     var button = form.querySelector("[type=submit]");
 
@@ -622,8 +636,11 @@
       var to = form.dataset.mailto;
       if (!to) return false;
       var f = new FormData(form);
-      var LABEL = { name: "Имя", company: "Компания", email: "E-mail",
-                    phone: "Телефон", topic: "Тема", message: "Сообщение" };
+      var LABEL = { topic: "Тема", name: "Имя", company: "Компания",
+                    email: "E-mail", phone: "Телефон", contact: "Контакт",
+                    sku: "Артикул", product: "Товар", finish: "Отделка",
+                    price: "Цена", qty: "Количество", positions: "Состав",
+                    total: "Итого", message: "Сообщение" };
       var lines = [];
       f.forEach(function (v, k) {
         if (String(v).trim()) lines.push((LABEL[k] || k) + ": " + v);
@@ -638,6 +655,7 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
+      fillContext(form);
       var endpoint = form.dataset.endpoint;
       if (!endpoint) {
         say(letter() ? "mail" : "failed");

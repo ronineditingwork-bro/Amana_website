@@ -14,7 +14,7 @@
   <link rel="preconnect" href="">
   <link rel="preload" href="assets/fonts/jost-200-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/inter-300-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/main.css?v=a2de1c8b">
+  <link rel="stylesheet" href="assets/css/main.css?v=1d4c39c8">
   <script>document.documentElement.classList.add("js");</script>
   <script>window.AMANA_CONFIG = {"currency": "₽", "vat": 22, "vatIncluded": true, "vatShow": false, "lead": {"stock": "3 рабочих дня", "order": "4—6 недель", "note": "Актуальные сроки поставки уточняйте у менеджера."}};</script>
 
@@ -136,6 +136,41 @@
               В корзину <i class="arrow"></i>
             </button>
           </div>
+
+          <details class="request">
+            <summary>Запросить цену <i class="arrow"></i></summary>
+            <form class="request__form" data-form data-endpoint="https://luxauto-5588.pleshkovaleksey.workers.dev"
+                  data-mailto="amana@amanagroup.org" novalidate>
+              <input type="hidden" name="topic" value="Запрос цены с карточки товара">
+              <input type="hidden" name="product" value="Внешняя часть напольного смесителя для ванны HAPA CRX с ручным душем">
+              <input type="hidden" name="sku" data-from="[data-sku-label]">
+              <input type="hidden" name="finish" data-from="[data-swatch-label]">
+              <input type="hidden" name="price" data-from="[data-price-label]">
+              <input type="hidden" name="qty" data-from="[data-qty-input]">
+              <div class="field">
+                <label for="rq-name">Имя</label>
+                <input id="rq-name" name="name" type="text" autocomplete="name" required>
+              </div>
+              <div class="field">
+                <label for="rq-contact">Телефон или e-mail</label>
+                <input id="rq-contact" name="contact" type="text" autocomplete="tel" required>
+              </div>
+              <div class="field">
+                <label for="rq-message">Комментарий</label>
+                <textarea id="rq-message" name="message" rows="2"
+                          placeholder="Объект, сроки, количество"></textarea>
+              </div>
+              <div class="btn-row" style="align-items:center;gap:1.5rem">
+                <button class="btn" type="submit">Отправить <i class="arrow"></i></button>
+                <p class="form__status"
+                   data-sending="Отправляем…"
+                   data-sent="Заявка ушла. Ответим в течение рабочего дня."
+                   data-failed="Не отправилось. Позвоните +7 989 266 9 266."
+                   data-mail="Письмо открылось в вашей почте — осталось нажать «Отправить»."></p>
+              </div>
+              <p class="form__note">Отправляя форму, вы соглашаетесь на обработку персональных данных.</p>
+            </form>
+          </details>
 
           <table class="table">
             <tbody><tr><th>Раздел</th><td>Напольные смесители</td></tr><tr><th>Коллекция</th><td>CRX</td></tr><tr><th>Вид</th><td>Смеситель для ванны</td></tr><tr><th>Тип монтажа</th><td>Встраиваемый</td></tr><tr><th>Картридж</th><td>Однорычажный</td></tr><tr><th>Материал</th><td>Латунь</td></tr><tr><th>Высота, см</th><td>103</td></tr><tr><th>Длина излива, см</th><td>22</td></tr><tr><th>Гарантия</th><td>5 лет</td></tr><tr><th>Встраиваемая часть</th><td>CRX.0013.PIT</td></tr><tr><th>Артикул базы</th><td>CRX.0013.PEX</td></tr><tr><th>Артикул</th><td data-sku-label>CRX.0013.PEX.PC</td></tr></tbody>
@@ -317,8 +352,8 @@
   </footer>
 
   <div class="veil" aria-hidden="true"></div>
-  <script src="assets/js/main.js?v=f05be5cd" defer></script>
-  <script src="assets/js/shop.js?v=d057fc9d" defer></script>
+  <script src="assets/js/main.js?v=510d2cee" defer></script>
+  <script src="assets/js/shop.js?v=bf56be62" defer></script>
 
 </body>
 </html>

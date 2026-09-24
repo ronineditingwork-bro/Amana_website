@@ -14,7 +14,7 @@
   <link rel="preconnect" href="">
   <link rel="preload" href="assets/fonts/jost-200-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/inter-300-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/main.css?v=a2de1c8b">
+  <link rel="stylesheet" href="assets/css/main.css?v=1d4c39c8">
   <script>document.documentElement.classList.add("js");</script>
   <script>window.AMANA_CONFIG = {"currency": "₽", "vat": 22, "vatIncluded": true, "vatShow": false, "lead": {"stock": "3 рабочих дня", "order": "4—6 недель", "note": "Актуальные сроки поставки уточняйте у менеджера."}};</script>
 
@@ -152,6 +152,41 @@
               В корзину <i class="arrow"></i>
             </button>
           </div>
+
+          <details class="request">
+            <summary>Запросить цену <i class="arrow"></i></summary>
+            <form class="request__form" data-form data-endpoint="https://luxauto-5588.pleshkovaleksey.workers.dev"
+                  data-mailto="amana@amanagroup.org" novalidate>
+              <input type="hidden" name="topic" value="Запрос цены с карточки товара">
+              <input type="hidden" name="product" value="КОНТИНУУМ ПОЛАР 120 РЕТ">
+              <input type="hidden" name="sku" data-from="[data-sku-label]">
+              <input type="hidden" name="finish" data-from="[data-swatch-label]">
+              <input type="hidden" name="price" data-from="[data-price-label]">
+              <input type="hidden" name="qty" data-from="[data-qty-input]">
+              <div class="field">
+                <label for="rq-name">Имя</label>
+                <input id="rq-name" name="name" type="text" autocomplete="name" required>
+              </div>
+              <div class="field">
+                <label for="rq-contact">Телефон или e-mail</label>
+                <input id="rq-contact" name="contact" type="text" autocomplete="tel" required>
+              </div>
+              <div class="field">
+                <label for="rq-message">Комментарий</label>
+                <textarea id="rq-message" name="message" rows="2"
+                          placeholder="Объект, сроки, количество"></textarea>
+              </div>
+              <div class="btn-row" style="align-items:center;gap:1.5rem">
+                <button class="btn" type="submit">Отправить <i class="arrow"></i></button>
+                <p class="form__status"
+                   data-sending="Отправляем…"
+                   data-sent="Заявка ушла. Ответим в течение рабочего дня."
+                   data-failed="Не отправилось. Позвоните +7 989 266 9 266."
+                   data-mail="Письмо открылось в вашей почте — осталось нажать «Отправить»."></p>
+              </div>
+              <p class="form__note">Отправляя форму, вы соглашаетесь на обработку персональных данных.</p>
+            </form>
+          </details>
 
           <table class="table">
             <tbody><tr><th>Коллекция</th><td>Континуум</td></tr><tr><th>Формат</th><td>120×120</td></tr><tr><th>Поверхность</th><td>натуральный, ректифицированный</td></tr><tr><th>В коробке</th><td>2,88 м²</td></tr><tr><th>Штук в коробке</th><td>2</td></tr><tr><th>На палете</th><td>57,6 м²</td></tr><tr><th>Минимальный заказ</th><td>1 паллета</td></tr><tr><th>Код</th><td>610010004106</td></tr></tbody>
@@ -332,8 +367,8 @@
   </footer>
 
   <div class="veil" aria-hidden="true"></div>
-  <script src="assets/js/main.js?v=f05be5cd" defer></script>
-  <script src="assets/js/shop.js?v=d057fc9d" defer></script>
+  <script src="assets/js/main.js?v=510d2cee" defer></script>
+  <script src="assets/js/shop.js?v=bf56be62" defer></script>
 
 </body>
 </html>

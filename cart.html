@@ -14,7 +14,7 @@
   <link rel="preconnect" href="">
   <link rel="preload" href="assets/fonts/jost-200-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/inter-300-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/main.css?v=a2de1c8b">
+  <link rel="stylesheet" href="assets/css/main.css?v=1d4c39c8">
   <script>document.documentElement.classList.add("js");</script>
   <script>window.AMANA_CONFIG = {"currency": "₽", "vat": 22, "vatIncluded": true, "vatShow": false, "lead": {"stock": "3 рабочих дня", "order": "4—6 недель", "note": "Актуальные сроки поставки уточняйте у менеджера."}};</script>
 
@@ -149,8 +149,41 @@
             <a class="btn" href="offer.html" style="margin-top:1.5rem;width:100%;justify-content:space-between">
               Сформировать КП <i class="arrow"></i>
             </a>
+            <details class="request">
+              <summary>Оформить заказ <i class="arrow"></i></summary>
+              <form class="request__form" data-form data-endpoint="https://luxauto-5588.pleshkovaleksey.workers.dev"
+                    data-mailto="amana@amanagroup.org" novalidate>
+                <input type="hidden" name="topic" value="Заказ из корзины">
+                <input type="hidden" name="positions" data-cart-positions>
+                <input type="hidden" name="total" data-from="[data-sum-total]">
+                <div class="field">
+                  <label for="ord-name">Имя</label>
+                  <input id="ord-name" name="name" type="text" autocomplete="name" required>
+                </div>
+                <div class="field">
+                  <label for="ord-contact">Телефон или e-mail</label>
+                  <input id="ord-contact" name="contact" type="text" autocomplete="tel" required>
+                </div>
+                <div class="field">
+                  <label for="ord-message">Комментарий</label>
+                  <textarea id="ord-message" name="message" rows="2"
+                            placeholder="Объект, адрес доставки, сроки"></textarea>
+                </div>
+                <div class="btn-row" style="align-items:center;gap:1.5rem">
+                  <button class="btn" type="submit">Отправить заказ <i class="arrow"></i></button>
+                  <p class="form__status"
+                     data-sending="Отправляем…"
+                     data-sent="Заказ ушёл менеджеру вместе с составом корзины. Ответим в течение рабочего дня."
+                     data-failed="Не отправилось. Позвоните +7 989 266 9 266."
+                     data-mail="Письмо с заказом открылось в вашей почте — осталось нажать «Отправить»."></p>
+                </div>
+                <p class="form__note">Отправляя форму, вы соглашаетесь на обработку персональных данных.</p>
+              </form>
+            </details>
+
             <p class="muted" style="font-size:.75rem;margin-top:1rem">
-              Состав корзины хранится только в вашем браузере.
+              Состав корзины хранится только в вашем браузере — в заказ он
+              уходит только когда вы нажимаете «Отправить заказ».
               Актуальные сроки поставки уточняйте у менеджера.
             </p>
           </div>
@@ -223,8 +256,8 @@
   </footer>
 
   <div class="veil" aria-hidden="true"></div>
-  <script src="assets/js/main.js?v=f05be5cd" defer></script>
-  <script src="assets/js/shop.js?v=d057fc9d" defer></script>
+  <script src="assets/js/main.js?v=510d2cee" defer></script>
+  <script src="assets/js/shop.js?v=bf56be62" defer></script>
 
 </body>
 </html>

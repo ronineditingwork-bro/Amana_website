@@ -718,6 +718,26 @@ a:hover .media img,
 }
 .form__status.is-shown { display: block; }
 
+/* Запрос цены на карточке товара и заказ из корзины. Форма лежит свёрнутой:
+   развёрнутая она спорила бы с ценой и кнопкой «В корзину» за внимание,
+   а нужна она не каждому — многие уходят в корзину. */
+.request { margin-top: clamp(1.5rem, 3vw, 2rem); }
+.request > summary {
+  list-style: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.85rem;
+  font-size: 0.6875rem; letter-spacing: 0.22em; text-transform: uppercase;
+  padding: 1.05rem 0 0.95rem; border-bottom: 1px solid currentColor;
+  transition: gap 0.6s var(--ease), opacity 0.4s var(--ease);
+}
+.request > summary::-webkit-details-marker { display: none; }
+.request > summary::marker { content: ""; }
+.request > summary:hover { gap: 1.4rem; }
+.request[open] > summary { color: var(--muted); }
+.request__form { display: grid; gap: 1.25rem; margin-top: 1.5rem; }
+.request__form .field label { font-size: 0.625rem; }
+.request__form .form__note { font-size: 0.6875rem; }
+.request__note { font-size: 0.75rem; color: var(--muted); }
+
 /* На служебных страницах (корзина, КП) крупный логотип в подвале — лишний
    повтор шапки, оставляем только ссылки. */
 .utility .footer__brand { display: none; }

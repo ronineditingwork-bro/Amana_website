@@ -211,6 +211,9 @@
 
     if (empty) empty.hidden = list.length > 0;
     if (body) body.hidden = list.length === 0;
+    // состав для формы заказа: она отправляет то, что сейчас в корзине
+    var hidden = document.querySelector("[data-cart-positions]");
+    if (hidden) hidden.value = positionLines(list);
     if (!list.length) { root.innerHTML = ""; paintSums(totals(list)); return; }
 
     root.innerHTML = list.map(function (i) {
@@ -339,15 +342,10 @@
      не пропала. */
   var OFFER_LINES = 25;          // строк позиций в сообщении, дальше — счётчик
 
-  function offerField(name) {
-    var el = document.querySelector('[data-offer-field="' + name + '"]');
-    return el ? el.value.trim() : "";
-  }
-
-  function offerText() {
-    var list = read();
-    if (!list.length) return null;
-    var t = totals(list);
+  /* Состав одной строкой на позицию — им пользуются и заказ из корзины,
+     и заявка по КП. Список режется: у Telegram потолок на сообщение, а
+     полный состав всё равно остаётся в корзине и в самом КП. */
+  function positionLines(list) {
     var lines = list.slice(0, OFFER_LINES).map(function (i, n) {
       return (n + 1) + ". " + i.sku + " — " + i.name +
         (i.colorName ? " (" + i.colorName + ")" : "") +
@@ -357,13 +355,25 @@
     if (list.length > OFFER_LINES) {
       lines.push("…и ещё " + (list.length - OFFER_LINES) + " поз.");
     }
+    return lines.join("\n");
+  }
+
+  function offerField(name) {
+    var el = document.querySelector('[data-offer-field="' + name + '"]');
+    return el ? el.value.trim() : "";
+  }
+
+  function offerText() {
+    var list = read();
+    if (!list.length) return null;
+    var t = totals(list);
     var num = document.querySelector("[data-offer-number]");
     return {
       offer: (num ? num.textContent.trim() : "") || "без номера",
       client: offerField("client"),
       object: offerField("object"),
       contact: offerField("contact"),
-      positions: lines.join("\n"),
+      positions: positionLines(list),
       total: money(t.sum) + " за " + t.count + " шт. в " + list.length + " поз."
     };
   }
