@@ -420,9 +420,11 @@
         .then(function (r) {
           if (!r.ok) throw new Error(r.status);
           say("sent");
+          // Telegram получил заявку; открываем черновик для привычной копии по e-mail.
+          if (mail) offerLetter(mail, data);
         })
         .catch(function () {
-          // не дошло — отдаём заявку почте гостя, чтобы она не пропала
+          // Не удалось подтвердить Telegram-отправку — сохраняем прежний почтовый вариант.
           say(offerLetter(mail, data) ? "mail" : "failed");
         })
         .then(function () { send.disabled = false; });
