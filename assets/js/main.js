@@ -335,7 +335,7 @@
   }
 
   /* -------------------------------------------------------------- catalog */
-  // Каталог держит три витрины — по одной на бренд. Бренд переключает
+  // Каталог держит пять витрин — по одной на бренд. Бренд переключает
   // витрину и прячет группы фильтров, которые к ней не относятся;
   // остальные группы отбирают карточки внутри активной витрины.
   function setupCatalog() {
@@ -350,17 +350,20 @@
       deante: "Deante · Польша",
       italon: "Italon · керамогранит",
       kkpol: "KK POL · инженерия",
-      whitecross: "WHITECROSS · Польша"
+      whitecross: "WHITECROSS · Польша",
+      hapa: "HAPA · латунь"
     };
     var state = { brand: "deante", collection: "all", category: "all", finish: "all",
                   line: "all", effect: "all", format: "all",
                   kkkind: "all", kkcoll: "all", kkfinish: "all",
-                  wcsec: "all", wccoll: "all", wcfinish: "all" };
+                  wcsec: "all", wccoll: "all", wcfinish: "all",
+                  hpsec: "all", hpcoll: "all", hpfinish: "all" };
     var GROUPS = {
       deante: ["collection", "category", "finish"],
       italon: ["line", "effect", "format"],
       kkpol: ["kkkind", "kkcoll", "kkfinish"],
-      whitecross: ["wcsec", "wccoll", "wcfinish"]
+      whitecross: ["wcsec", "wccoll", "wcfinish"],
+      hapa: ["hpsec", "hpcoll", "hpfinish"]
     };
 
     function apply() {
@@ -409,7 +412,8 @@
         state[b.dataset.group] = b.dataset.value;
         if (b.dataset.group === "brand") {
           ["collection", "category", "finish", "line", "effect", "format",
-           "kkkind", "kkcoll", "kkfinish", "wcsec", "wccoll", "wcfinish"]
+           "kkkind", "kkcoll", "kkfinish", "wcsec", "wccoll", "wcfinish",
+           "hpsec", "hpcoll", "hpfinish"]
             .forEach(function (g) { state[g] = "all"; });
         }
         apply();
