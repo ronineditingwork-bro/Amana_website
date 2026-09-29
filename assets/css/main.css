@@ -744,6 +744,24 @@ a:hover .media img,
 .utility .footer__top { grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 900px) { .utility .footer__top { grid-template-columns: repeat(2, 1fr); } }
 
+/* Частые вопросы: ответ виден сразу, без раскрытия. Поисковик читает
+   разметку только у того, что есть в тексте страницы, а покупателю лишний
+   клик ради строчки в три предложения ни к чему. */
+.faq { display: grid; gap: 0; }
+.faq__item {
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(1rem, 3vw, 3rem);
+  padding-block: clamp(1.5rem, 3vw, 2.25rem);
+  border-top: 1px solid var(--rule);
+}
+.faq__item:last-child { border-bottom: 1px solid var(--rule); }
+.faq__q { font-family: var(--font-display); font-weight: 300; font-size: 1.0625rem; line-height: 1.35; }
+.faq__a { color: var(--muted); font-size: 0.9375rem; line-height: 1.7; max-width: 58ch; }
+.faq__a a { color: var(--fg); border-bottom: 1px solid var(--rule); }
+@media (max-width: 760px) {
+  .faq__item { grid-template-columns: 1fr; gap: 0.75rem; }
+}
+
 /* ----------------------------------------------------------------- footer */
 .footer { padding-top: clamp(4rem, 8vw, 7rem); padding-bottom: 2.5rem; }
 .footer__top { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(2rem, 3vw, 2.25rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
