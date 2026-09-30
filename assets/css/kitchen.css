@@ -1,118 +1,386 @@
 /* ==========================================================================
-   AMANA · ТЕХНИКА ДЛЯ КУХНИ
-   Отдельное направление, отдельный визуальный язык.
+   AMANA · ТАЙНАЯ КОМНАТА
+   Техника для комфортной жизни.
 
-   Основной сайт — светлый, бумажный, с воздухом. Здесь всё наоборот:
-   уголь, тёплый металл, крупная типографика. Стили намеренно не делят
-   ничего с main.css, кроме шрифтов, — страница не должна тащить за собой
-   правила витрины, а витрина не должна темнеть от правок здесь.
+   Обрамление сдержанное — уголь и латунь, как на остальном сайте раздела.
+   Играет карта: земли яркие, вода насыщенная. С main.css не делим ничего,
+   кроме шрифтов.
    ========================================================================== */
 
 @import url("fonts.css");
 
 :root {
-  --k-carbon:  #0d0d0c;   /* фон */
-  --k-panel:   #151513;   /* карточка, полоса */
-  --k-raised:  #1d1d1a;   /* наведение */
-  --k-chalk:   #ece8e1;   /* текст */
-  --k-ash:     #8a8781;   /* второстепенный текст */
-  --k-brass:   #b89b6a;   /* акцент: тёплый металл */
-  --k-brass-d: #8d7750;
+  --k-carbon:  #0d0d0c;
+  --k-panel:   #151513;
+  --k-chalk:   #ece8e1;
+  --k-ash:     #8a8781;
+  --k-brass:   #b89b6a;
+  /* бумага и чернила: карта гравированная, цвета на ней нет */
+  --k-paper:   #e6dfd0;
+  --k-paper-d: #d9d0bd;
+  --k-ink:     #2b261d;
+  --ink-h:     rgba(43, 38, 29, 0.42);
+  --k-sea:     var(--k-paper);
+  --k-line:      rgba(236, 232, 225, 0.14);
+  --k-line-soft: rgba(236, 232, 225, 0.07);
 
-  --k-line:      rgba(236, 232, 225, 0.12);
-  --k-line-soft: rgba(236, 232, 225, 0.06);
-
-  --k-display: "Jost", "Futura", "Century Gothic", ui-sans-serif, sans-serif;
-  --k-text:    "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-
-  --k-gutter:  clamp(1.25rem, 4.6vw, 5rem);
-  --k-measure: 1560px;
-  --k-section: clamp(4rem, 8vw, 8.5rem);
+  --k-display: "Jost", "Futura", ui-sans-serif, sans-serif;
+  --k-text:    "Inter", ui-sans-serif, system-ui, sans-serif;
   --k-ease:    cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+/* авторское display перебивает служебное скрытие браузера: без этого
+   кнопки зума с display:flex торчали поверх машинки до запуска */
+[hidden] { display: none !important; }
 
-body {
+html, body { height: 100%; }
+
+body.k-app {
   margin: 0;
-  background: var(--k-carbon);
+  overflow: hidden;
+  background: var(--k-paper);
   color: var(--k-chalk);
   font-family: var(--k-text);
   font-weight: 300;
-  font-size: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
-  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
 
-img { max-width: 100%; height: auto; display: block; }
+:focus-visible { outline: 2px solid var(--k-brass); outline-offset: 3px; }
 
-a { color: inherit; }
-
-::selection { background: var(--k-brass); color: var(--k-carbon); }
-
-:focus-visible {
-  outline: 2px solid var(--k-brass);
-  outline-offset: 3px;
+.k-skip {
+  position: fixed;
+  top: -3rem;
+  left: 1rem;
+  z-index: 60;
+  background: var(--k-chalk);
+  color: var(--k-carbon);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: top 0.2s;
 }
 
-.k-shell {
-  width: min(100% - var(--k-gutter) * 2, var(--k-measure));
-  margin-inline: auto;
+.k-skip:focus { top: 1rem; }
+
+/* ------------------------------------------------------------ верхняя строка */
+
+.k-bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  pointer-events: none;
 }
 
-.k-section { padding-block: var(--k-section); }
+.k-pill {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--k-paper);
+  color: var(--k-ink);
+  border: 1px solid var(--k-ink);
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--k-display);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.7rem 1.25rem;
+  transition: background 0.3s var(--k-ease);
+}
 
-/* уход со страницы: на основном сайте это делает завеса из main.css,
-   здесь её нет — гасим саму страницу, иначе клик выглядит подвисшим */
-.js.is-leaving body { opacity: 0; transition: opacity 0.34s var(--k-ease); }
+.k-pill:hover, .k-pill:focus-visible { background: var(--k-ink); color: var(--k-paper); }
 
-/* ------------------------------------------------------------------ шапка */
+/* -------------------------------------------------------------------- карта */
 
-.k-head {
+.k-map { position: fixed; inset: 0; background: var(--k-paper); }
+
+#map { width: 100%; height: 100%; display: block; cursor: grab; }
+#map.is-dragging { cursor: grabbing; }
+
+/* зерно бумаги поверх всего: без него заливка выглядит пластиком */
+.paper { fill: #6b5a3c; mix-blend-mode: multiply; pointer-events: none; }
+
+/* прибой: тот же берег всё шире и бледнее — приём старых карт */
+.surf {
+  fill: none;
+  stroke: var(--k-ink);
+  stroke-width: calc(var(--i) * 3px);
+  opacity: calc(0.05 + var(--i) * 0.025);
+}
+
+.wave { fill: none; stroke: var(--k-ink); stroke-width: 1.4; opacity: 0.22; }
+
+.land { cursor: pointer; }
+.land:focus { outline: none; }
+
+.land__body, .land__isle {
+  fill: var(--hatch);
+  stroke: var(--k-ink);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  transition: opacity 0.3s var(--k-ease);
+}
+
+/* наведение не красит землю, а притемняет — цвета на карте нет */
+.land:hover .land__body,
+.land:focus-visible .land__body { stroke-width: 4; }
+
+.land.is-on .land__body { stroke-width: 5; }
+
+.land.is-on .land__body,
+.land.is-on .land__isle { filter: url(#none); }
+
+.k-map:has(.land.is-on) .land:not(.is-on) { opacity: 0.45; }
+
+.relief { fill: var(--k-ink); opacity: 0.55; pointer-events: none; }
+.relief .thin { stroke: var(--k-paper); stroke-width: 1.4; fill: none; }
+.relief .thin2 { stroke: var(--k-ink); stroke-width: 1.2; fill: none; }
+
+/* компас и картуш */
+.rose { pointer-events: none; }
+.rose__ring { fill: none; stroke: var(--k-ink); stroke-width: 1.2; opacity: 0.45; }
+.rose__pt { fill: none; stroke: var(--k-ink); stroke-width: 1.4; opacity: 0.7; }
+.rose__pt--soft { opacity: 0.4; }
+.rose__fill { fill: var(--k-ink); opacity: 0.75; }
+
+.rose__n {
+  fill: var(--k-ink);
+  font-family: var(--k-display);
+  font-size: 22px;
+  letter-spacing: 0.1em;
+  text-anchor: middle;
+}
+
+.cart { pointer-events: none; }
+.cart__box { fill: none; stroke: var(--k-ink); stroke-width: 1.6; opacity: 0.55; }
+.cart__box--in { opacity: 0.3; }
+
+.cart__t {
+  fill: var(--k-ink);
+  font-family: var(--k-display);
+  font-size: 34px;
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  text-anchor: middle;
+}
+
+.cart__s {
+  fill: var(--k-ink);
+  font-family: var(--k-text);
+  font-size: 17px;
+  letter-spacing: 0.04em;
+  text-anchor: middle;
+  opacity: 0.8;
+}
+
+.cart__s--sm { font-size: 12px; letter-spacing: 0.22em; opacity: 0.55; }
+
+.pin { pointer-events: none; opacity: 0; transition: opacity 0.6s var(--k-ease) 0.5s; }
+.k-open .pin { opacity: 1; }
+
+.pin__name {
+  fill: var(--k-ink);
+  font-family: var(--k-display);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: var(--k-paper);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+}
+
+.pin__n {
+  fill: var(--k-ink);
+  font-family: var(--k-text);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-anchor: middle;
+  opacity: 0.6;
+  paint-order: stroke;
+  stroke: var(--k-paper);
+  stroke-width: 5px;
+}
+
+.k-zoom {
+  position: fixed;
+  right: clamp(0.75rem, 2vw, 1.25rem);
+  bottom: clamp(0.75rem, 2vw, 1.25rem);
+  z-index: 30;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.k-zoom button {
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid var(--k-ink);
+  border-radius: 999px;
+  background: var(--k-paper);
+  color: var(--k-ink);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background 0.3s var(--k-ease);
+}
+
+.k-zoom button:hover, .k-zoom button:focus-visible {
+  background: var(--k-ink);
+  color: var(--k-paper);
+}
+
+/* ----------------------------------------------------------------- машинка */
+
+.k-machine {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  cursor: pointer;
+  transform-origin: 50% 58%;
+  transition: transform 1.05s var(--k-ease), opacity 1.05s var(--k-ease);
+}
+
+.k-machine svg { width: 100%; height: 100%; display: block; }
+
+.k-knob { cursor: pointer; }
+.k-knob circle { transition: fill 0.3s var(--k-ease); }
+.k-knob:hover circle, .k-knob:focus-visible circle { fill: var(--k-chalk); }
+
+.k-knob text {
+  fill: #14140f;
+  font-family: var(--k-display);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.k-hint {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1rem, 4vh, 3rem);
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--k-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--k-brass);
+}
+
+.k-open .k-machine { transform: scale(7); opacity: 0; pointer-events: none; }
+
+/* ------------------------------------------------------------ панель земли */
+
+.k-panel {
+  position: fixed;
+  z-index: 35;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--k-panel);
+  border-top: 1px solid var(--k-line);
+  max-height: 70vh;
+  overflow: auto;
+}
+
+@media (min-width: 48rem) {
+  .k-panel {
+    right: auto;
+    top: 0;
+    bottom: 0;
+    width: min(26rem, 42vw);
+    max-height: none;
+    border-top: 0;
+    border-right: 1px solid var(--k-line);
+  }
+}
+
+.k-panel__in { padding: clamp(1.25rem, 3vw, 2.5rem); display: grid; gap: 1.25rem; }
+.k-panel__close { justify-self: start; }
+
+/* ------------------------------------------------------ меню и лист данных */
+
+.k-menu, .k-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--k-carbon);
+  overflow: auto;
+}
+
+.k-menu__bar, .k-sheet__bar {
   position: sticky;
   top: 0;
-  z-index: 20;
-  background: rgba(13, 13, 12, 0.88);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--k-line-soft);
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  background: var(--k-carbon);
 }
 
-.k-head__in {
+.k-menu__in, .k-sheet__in {
+  width: min(100% - 2.5rem, 1200px);
+  margin-inline: auto;
+  padding-bottom: clamp(3rem, 8vh, 6rem);
+}
+
+.k-menu__lede {
+  max-width: 34ch;
+  margin: clamp(2rem, 6vh, 4rem) 0;
+  color: var(--k-ash);
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.25rem);
+}
+
+.k-menu__nav { display: grid; border-top: 1px solid var(--k-line-soft); }
+
+.k-menu__nav button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  min-height: 4.5rem;
-}
-
-.k-word {
+  gap: 2rem;
+  width: 100%;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--k-line-soft);
+  color: inherit;
+  cursor: pointer;
+  padding: clamp(1rem, 3vh, 2rem) 0;
   font-family: var(--k-display);
-  font-weight: 300;
-  font-size: 0.9375rem;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  text-decoration: none;
-  white-space: nowrap;
+  font-size: clamp(1.75rem, 6vw, 4rem);
+  font-weight: 200;
+  letter-spacing: -0.01em;
+  text-align: left;
+  transition: color 0.3s var(--k-ease);
 }
 
-.k-word b { font-weight: 400; color: var(--k-brass); }
+.k-menu__nav button:hover, .k-menu__nav button:focus-visible { color: var(--k-brass); }
+.k-menu__nav i { font-style: normal; font-size: 0.4em; }
 
 .k-back {
-  font-size: 0.75rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  display: inline-block;
+  margin-top: clamp(2rem, 5vh, 3.5rem);
   color: var(--k-ash);
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   text-decoration: none;
-  transition: color 0.3s var(--k-ease);
 }
 
 .k-back:hover, .k-back:focus-visible { color: var(--k-chalk); }
 
-/* ------------------------------------------------------------------ обложка */
+.k-sheet__in > section { padding-top: clamp(1.5rem, 4vh, 3rem); }
 
-.k-hero { padding-block: clamp(4.5rem, 12vw, 11rem) var(--k-section); }
+/* ------------------------------------------------------------- типографика */
 
 .k-eyebrow {
   font-family: var(--k-display);
@@ -121,29 +389,8 @@ a { color: inherit; }
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--k-brass);
-  margin: 0 0 2rem;
-}
-
-.k-display {
-  font-family: var(--k-display);
-  font-weight: 200;
-  font-size: clamp(2.75rem, 9vw, 7.5rem);
-  line-height: 0.96;
-  letter-spacing: -0.02em;
   margin: 0;
-  text-wrap: balance;
 }
-
-.k-lede {
-  max-width: 46ch;
-  margin: 2.5rem 0 0;
-  color: var(--k-ash);
-  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.1875rem);
-}
-
-.k-rule { height: 1px; background: var(--k-line); border: 0; margin: 0; }
-
-/* ------------------------------------------------------------- заголовки */
 
 .k-h2 {
   font-family: var(--k-display);
@@ -154,129 +401,80 @@ a { color: inherit; }
   margin: 0;
 }
 
-.k-sec-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 1rem 3rem;
-  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
-}
-
-.k-sec-head .k-eyebrow { margin: 0; flex: 0 0 auto; }
-
-/* ------------------------------------------------------------- категории */
-
-/* Колонки заданы числом, а не auto-fill: групп шесть, и при произвольном
-   числе колонок последний ряд остаётся недобранным — пустое место читается
-   как сломанная ячейка. Три и две делят шесть нацело. */
-.k-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--k-line-soft);
-  border: 1px solid var(--k-line-soft);
-}
-
-@media (min-width: 40rem) {
-  .k-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (min-width: 64rem) {
-  .k-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
-.k-cell {
-  background: var(--k-panel);
-  padding: clamp(1.75rem, 3vw, 2.75rem);
-  min-height: clamp(11rem, 18vw, 15rem);
-  display: flex;
-  flex-direction: column;
-  /* по верху, а не space-between: подписи разной длины иначе растаскивают
-     названия по высоте, и ряд читается неровным */
-  justify-content: flex-start;
-  gap: clamp(2rem, 4vw, 3.5rem);
-  transition: background 0.4s var(--k-ease);
-}
-
-.k-cell:hover { background: var(--k-raised); }
-
-.k-cell__no {
-  font-family: var(--k-display);
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-  color: var(--k-brass-d);
-}
-
-.k-cell__name {
-  font-family: var(--k-display);
-  font-weight: 300;
-  font-size: clamp(1.125rem, 1.6vw, 1.5rem);
-  line-height: 1.2;
-  margin: 0;
-}
-
-.k-cell__note {
-  margin: 0.75rem 0 0;
-  font-size: 0.875rem;
+.k-lede {
+  max-width: 46ch;
+  margin: 1.5rem 0 0;
   color: var(--k-ash);
 }
 
-/* ---------------------------------------------------------------- бренды */
+/* --------------------------------------------------------- список моделей */
 
-/* Брендов пока два: auto-fill растянул бы их в нитки по всей ширине.
-   Две колонки с потолком по ширине, остальное — воздух. */
-.k-brands {
+.k-lines { display: grid; border-top: 1px solid var(--k-line-soft); margin-top: 2.5rem; }
+
+.k-line {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(2rem, 4vw, 3.5rem);
+  gap: 0.75rem 3rem;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) 0;
+  border-bottom: 1px solid var(--k-line-soft);
 }
+
+@media (min-width: 52rem) {
+  .k-line { grid-template-columns: 20rem 1fr; align-items: baseline; }
+}
+
+.k-line__head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+
+.k-line__name {
+  font-family: var(--k-display);
+  font-weight: 300;
+  font-size: clamp(1rem, 1.4vw, 1.1875rem);
+  margin: 0;
+}
+
+.k-line__count { font-family: var(--k-display); font-size: 0.75rem; color: var(--k-brass); }
+
+.k-skus { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; margin: 0; padding: 0; list-style: none; }
+
+.k-sku {
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: var(--k-ash);
+  border: 1px solid var(--k-line-soft);
+  padding: 0.3rem 0.625rem;
+  white-space: nowrap;
+}
+
+.k-skus--wide { flex-direction: column; align-items: flex-start; }
+.k-skus--wide .k-sku { white-space: normal; display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; }
+.k-skus--wide .k-sku span { opacity: 0.75; }
+
+.k-sku--named { white-space: normal; border-color: var(--k-line); }
+.k-sku--named a { text-decoration: none; color: var(--k-chalk); }
+.k-sku--named a:hover, .k-sku--named a:focus-visible { color: var(--k-brass); }
+
+/* ------------------------------------------------------------------ бренды */
+
+.k-brands { display: grid; grid-template-columns: 1fr; gap: clamp(2rem, 4vw, 3.5rem); margin-top: 2.5rem; }
 
 @media (min-width: 48rem) {
   .k-brands { grid-template-columns: repeat(2, minmax(0, 27rem)); }
 }
 
-.k-brand {
-  border-top: 1px solid var(--k-line);
-  padding-top: 1.5rem;
-}
-
-.k-brand__name {
-  font-family: var(--k-display);
-  font-weight: 300;
-  font-size: 1.25rem;
-  letter-spacing: 0.04em;
-  margin: 0;
-}
-
-.k-brand__note {
-  margin: 0.75rem 0 0;
-  font-size: 0.875rem;
-  color: var(--k-ash);
-}
-
-.k-brand__link {
-  text-decoration: none;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  transition: color 0.3s var(--k-ease);
-}
-
-.k-brand__link::after {
-  content: "↗";
-  font-size: 0.75em;
-  color: var(--k-brass);
-}
-
+.k-brand { border-top: 1px solid var(--k-line); padding-top: 1.5rem; }
+.k-brand__name { font-family: var(--k-display); font-weight: 300; font-size: 1.25rem; margin: 0; }
+.k-brand__note { margin: 0.75rem 0 0; font-size: 0.875rem; color: var(--k-ash); }
+.k-brand__link { text-decoration: none; display: inline-flex; gap: 0.5rem; }
+.k-brand__link::after { content: "↗"; font-size: 0.75em; color: var(--k-brass); }
 .k-brand__link:hover, .k-brand__link:focus-visible { color: var(--k-brass); }
 
-/* ------------------------------------------------------------------ шаги */
+/* ------------------------------------------------------------------- шаги */
 
 .k-steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: clamp(2rem, 4vw, 4rem);
   counter-reset: k-step;
+  margin-top: 2.5rem;
 }
 
 .k-step { counter-increment: k-step; }
@@ -291,31 +489,13 @@ a { color: inherit; }
   margin-bottom: 1.25rem;
 }
 
-.k-step h3 {
-  font-family: var(--k-display);
-  font-weight: 300;
-  font-size: 1.25rem;
-  margin: 0 0 0.75rem;
-}
-
+.k-step h3 { font-family: var(--k-display); font-weight: 300; font-size: 1.25rem; margin: 0 0 0.75rem; }
 .k-step p { margin: 0; color: var(--k-ash); font-size: 0.9375rem; }
 
 /* ------------------------------------------------------------------ форма */
 
-.k-form-wrap {
-  background: var(--k-panel);
-  border: 1px solid var(--k-line-soft);
-  padding: clamp(1.75rem, 4vw, 4rem);
-}
-
-.k-form { display: grid; gap: 1.5rem; }
-
-.k-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-}
-
+.k-form { display: grid; gap: 1.5rem; margin-top: 2.5rem; max-width: 46rem; }
+.k-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
 .k-field { display: grid; gap: 0.5rem; }
 
 .k-field label {
@@ -325,8 +505,7 @@ a { color: inherit; }
   color: var(--k-ash);
 }
 
-.k-field input,
-.k-field textarea {
+.k-field input, .k-field textarea {
   width: 100%;
   background: transparent;
   border: 0;
@@ -335,16 +514,10 @@ a { color: inherit; }
   font: inherit;
   padding: 0.625rem 0;
   border-radius: 0;
-  transition: border-color 0.3s var(--k-ease);
 }
 
 .k-field textarea { resize: vertical; min-height: 5rem; }
-
-.k-field input:focus,
-.k-field textarea:focus {
-  outline: none;
-  border-bottom-color: var(--k-brass);
-}
+.k-field input:focus, .k-field textarea:focus { outline: none; border-bottom-color: var(--k-brass); }
 
 .k-btn {
   justify-self: start;
@@ -357,7 +530,6 @@ a { color: inherit; }
   cursor: pointer;
   font-family: var(--k-display);
   font-size: 0.8125rem;
-  font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   padding: 1rem 2rem;
@@ -366,37 +538,30 @@ a { color: inherit; }
 
 .k-btn:hover, .k-btn:focus-visible { background: var(--k-chalk); }
 
-.k-status {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--k-brass);
-  min-height: 1.4em;
-}
-
+.k-status { margin: 0; font-size: 0.875rem; color: var(--k-brass); min-height: 1.4em; }
 .k-note { margin: 0; font-size: 0.75rem; color: var(--k-ash); }
 
-/* ----------------------------------------------------------------- подвал */
-
-.k-foot {
-  border-top: 1px solid var(--k-line-soft);
-  padding-block: clamp(2.5rem, 5vw, 4rem);
-}
-
-.k-foot__in {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1.5rem 3rem;
-  font-size: 0.8125rem;
-  color: var(--k-ash);
-}
-
-.k-foot a { color: var(--k-ash); text-decoration: none; }
-.k-foot a:hover, .k-foot a:focus-visible { color: var(--k-chalk); }
-
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+  .k-machine { transition-duration: 0.01ms; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; }
 }
+
+/* ---------------------------------------------------------- лёд и живность */
+
+/* полюса: лёд светлее бумаги и обведён тонко — это не земля */
+.ice {
+  fill: #f2ede2;
+  stroke: var(--k-ink);
+  stroke-width: 1.8;
+  pointer-events: none;
+}
+
+/* поверх заливки — крошка: без неё лёд неотличим от бумаги моря */
+.ice-x { fill: url(#ice-p); stroke: none; pointer-events: none; }
+
+.fauna { fill: var(--k-ink); opacity: 0.62; pointer-events: none; }
+.fauna .thin2 { stroke: var(--k-ink); stroke-width: 1.4; fill: none; }
+.fauna .spout { opacity: 0.55; }
+.fauna .beak { opacity: 0.8; }
+.fauna .spout { fill: none; stroke: var(--k-ink); stroke-width: 1.6; opacity: 0.6; }
+.fauna .eye { fill: var(--k-paper); }
