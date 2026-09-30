@@ -147,6 +147,7 @@
   var panel = document.querySelector("[data-panel]");
   var pTitle = document.querySelector("[data-panel-title]");
   var pCodes = document.querySelector("[data-panel-codes]");
+  var pPhoto = document.querySelector("[data-panel-photo]");
   var askField = document.querySelector("[data-ask-field]");
   var current = "";
 
@@ -154,12 +155,24 @@
     if (!panel) return;
     current = g.getAttribute("data-title") || "";
     pTitle.textContent = current;
+    var photo = g.getAttribute("data-photo") || "";
+    if (pPhoto) {
+      pPhoto.hidden = !photo;
+      if (photo) {
+        pPhoto.src = photo;
+        pPhoto.alt = current + " — кадр из каталога VÄRD";
+      }
+    }
     pCodes.innerHTML = "";
     (g.getAttribute("data-codes") || "").split(" ").filter(Boolean)
       .forEach(function (code) {
         var li = document.createElement("li");
         li.className = "k-sku";
-        li.textContent = code;
+        var b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("data-model", code);
+        b.textContent = code;
+        li.appendChild(b);
         pCodes.appendChild(li);
       });
     Array.prototype.forEach.call(document.querySelectorAll(".land.is-on"),
@@ -221,6 +234,16 @@
   var ask = document.querySelector("[data-ask]");
   if (ask) ask.addEventListener("click", function () {
     if (askField) askField.value = current;
+    openSheet("k-form", "Заявка");
+  });
+
+  /* Любая позиция ведёт в заявку с уже проставленным артикулом. Делегируем
+     на документ: коды в панели создаются на лету, вешать на каждую кнопку
+     свой обработчик незачем. */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-model]") : null;
+    if (!b) return;
+    if (askField) askField.value = b.getAttribute("data-model");
     openSheet("k-form", "Заявка");
   });
 
