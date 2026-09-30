@@ -781,6 +781,19 @@ a:hover .media img,
   padding-top: 2rem; border-top: 1px solid var(--rule);
   font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
 }
+
+/* Тихий вход в отдельное направление «Техника для кухни». Ссылка реальная
+   и доступна с клавиатуры — прятать её через display:none нельзя: это
+   скрытый текст, за который поисковик наказывает весь домен. */
+.footer__quiet {
+  opacity: 0.12;
+  text-decoration: none;
+  padding: 0 0.5rem;
+  transition: opacity 0.4s var(--ease);
+}
+
+.footer__quiet:hover,
+.footer__quiet:focus-visible { opacity: 0.6; }
 @media (max-width: 900px) {
   .footer__brand { grid-column: span 12; margin-bottom: 1.5rem; }
   .footer__col { grid-column: span 6; }

@@ -1,0 +1,402 @@
+/* ==========================================================================
+   AMANA · ТЕХНИКА ДЛЯ КУХНИ
+   Отдельное направление, отдельный визуальный язык.
+
+   Основной сайт — светлый, бумажный, с воздухом. Здесь всё наоборот:
+   уголь, тёплый металл, крупная типографика. Стили намеренно не делят
+   ничего с main.css, кроме шрифтов, — страница не должна тащить за собой
+   правила витрины, а витрина не должна темнеть от правок здесь.
+   ========================================================================== */
+
+@import url("fonts.css");
+
+:root {
+  --k-carbon:  #0d0d0c;   /* фон */
+  --k-panel:   #151513;   /* карточка, полоса */
+  --k-raised:  #1d1d1a;   /* наведение */
+  --k-chalk:   #ece8e1;   /* текст */
+  --k-ash:     #8a8781;   /* второстепенный текст */
+  --k-brass:   #b89b6a;   /* акцент: тёплый металл */
+  --k-brass-d: #8d7750;
+
+  --k-line:      rgba(236, 232, 225, 0.12);
+  --k-line-soft: rgba(236, 232, 225, 0.06);
+
+  --k-display: "Jost", "Futura", "Century Gothic", ui-sans-serif, sans-serif;
+  --k-text:    "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --k-gutter:  clamp(1.25rem, 4.6vw, 5rem);
+  --k-measure: 1560px;
+  --k-section: clamp(4rem, 8vw, 8.5rem);
+  --k-ease:    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--k-carbon);
+  color: var(--k-chalk);
+  font-family: var(--k-text);
+  font-weight: 300;
+  font-size: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+a { color: inherit; }
+
+::selection { background: var(--k-brass); color: var(--k-carbon); }
+
+:focus-visible {
+  outline: 2px solid var(--k-brass);
+  outline-offset: 3px;
+}
+
+.k-shell {
+  width: min(100% - var(--k-gutter) * 2, var(--k-measure));
+  margin-inline: auto;
+}
+
+.k-section { padding-block: var(--k-section); }
+
+/* уход со страницы: на основном сайте это делает завеса из main.css,
+   здесь её нет — гасим саму страницу, иначе клик выглядит подвисшим */
+.js.is-leaving body { opacity: 0; transition: opacity 0.34s var(--k-ease); }
+
+/* ------------------------------------------------------------------ шапка */
+
+.k-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(13, 13, 12, 0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--k-line-soft);
+}
+
+.k-head__in {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 4.5rem;
+}
+
+.k-word {
+  font-family: var(--k-display);
+  font-weight: 300;
+  font-size: 0.9375rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.k-word b { font-weight: 400; color: var(--k-brass); }
+
+.k-back {
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--k-ash);
+  text-decoration: none;
+  transition: color 0.3s var(--k-ease);
+}
+
+.k-back:hover, .k-back:focus-visible { color: var(--k-chalk); }
+
+/* ------------------------------------------------------------------ обложка */
+
+.k-hero { padding-block: clamp(4.5rem, 12vw, 11rem) var(--k-section); }
+
+.k-eyebrow {
+  font-family: var(--k-display);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--k-brass);
+  margin: 0 0 2rem;
+}
+
+.k-display {
+  font-family: var(--k-display);
+  font-weight: 200;
+  font-size: clamp(2.75rem, 9vw, 7.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.k-lede {
+  max-width: 46ch;
+  margin: 2.5rem 0 0;
+  color: var(--k-ash);
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.1875rem);
+}
+
+.k-rule { height: 1px; background: var(--k-line); border: 0; margin: 0; }
+
+/* ------------------------------------------------------------- заголовки */
+
+.k-h2 {
+  font-family: var(--k-display);
+  font-weight: 200;
+  font-size: clamp(1.75rem, 4vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.k-sec-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 1rem 3rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.k-sec-head .k-eyebrow { margin: 0; flex: 0 0 auto; }
+
+/* ------------------------------------------------------------- категории */
+
+/* Колонки заданы числом, а не auto-fill: групп шесть, и при произвольном
+   числе колонок последний ряд остаётся недобранным — пустое место читается
+   как сломанная ячейка. Три и две делят шесть нацело. */
+.k-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--k-line-soft);
+  border: 1px solid var(--k-line-soft);
+}
+
+@media (min-width: 40rem) {
+  .k-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 64rem) {
+  .k-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.k-cell {
+  background: var(--k-panel);
+  padding: clamp(1.75rem, 3vw, 2.75rem);
+  min-height: clamp(11rem, 18vw, 15rem);
+  display: flex;
+  flex-direction: column;
+  /* по верху, а не space-between: подписи разной длины иначе растаскивают
+     названия по высоте, и ряд читается неровным */
+  justify-content: flex-start;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  transition: background 0.4s var(--k-ease);
+}
+
+.k-cell:hover { background: var(--k-raised); }
+
+.k-cell__no {
+  font-family: var(--k-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--k-brass-d);
+}
+
+.k-cell__name {
+  font-family: var(--k-display);
+  font-weight: 300;
+  font-size: clamp(1.125rem, 1.6vw, 1.5rem);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.k-cell__note {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  color: var(--k-ash);
+}
+
+/* ---------------------------------------------------------------- бренды */
+
+/* Брендов пока два: auto-fill растянул бы их в нитки по всей ширине.
+   Две колонки с потолком по ширине, остальное — воздух. */
+.k-brands {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+}
+
+@media (min-width: 48rem) {
+  .k-brands { grid-template-columns: repeat(2, minmax(0, 27rem)); }
+}
+
+.k-brand {
+  border-top: 1px solid var(--k-line);
+  padding-top: 1.5rem;
+}
+
+.k-brand__name {
+  font-family: var(--k-display);
+  font-weight: 300;
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.k-brand__note {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  color: var(--k-ash);
+}
+
+.k-brand__link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  transition: color 0.3s var(--k-ease);
+}
+
+.k-brand__link::after {
+  content: "↗";
+  font-size: 0.75em;
+  color: var(--k-brass);
+}
+
+.k-brand__link:hover, .k-brand__link:focus-visible { color: var(--k-brass); }
+
+/* ------------------------------------------------------------------ шаги */
+
+.k-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(2rem, 4vw, 4rem);
+  counter-reset: k-step;
+}
+
+.k-step { counter-increment: k-step; }
+
+.k-step::before {
+  content: counter(k-step, decimal-leading-zero);
+  display: block;
+  font-family: var(--k-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--k-brass);
+  margin-bottom: 1.25rem;
+}
+
+.k-step h3 {
+  font-family: var(--k-display);
+  font-weight: 300;
+  font-size: 1.25rem;
+  margin: 0 0 0.75rem;
+}
+
+.k-step p { margin: 0; color: var(--k-ash); font-size: 0.9375rem; }
+
+/* ------------------------------------------------------------------ форма */
+
+.k-form-wrap {
+  background: var(--k-panel);
+  border: 1px solid var(--k-line-soft);
+  padding: clamp(1.75rem, 4vw, 4rem);
+}
+
+.k-form { display: grid; gap: 1.5rem; }
+
+.k-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.k-field { display: grid; gap: 0.5rem; }
+
+.k-field label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--k-ash);
+}
+
+.k-field input,
+.k-field textarea {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--k-line);
+  color: var(--k-chalk);
+  font: inherit;
+  padding: 0.625rem 0;
+  border-radius: 0;
+  transition: border-color 0.3s var(--k-ease);
+}
+
+.k-field textarea { resize: vertical; min-height: 5rem; }
+
+.k-field input:focus,
+.k-field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--k-brass);
+}
+
+.k-btn {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.875rem;
+  background: var(--k-brass);
+  color: var(--k-carbon);
+  border: 0;
+  cursor: pointer;
+  font-family: var(--k-display);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 1rem 2rem;
+  transition: background 0.3s var(--k-ease);
+}
+
+.k-btn:hover, .k-btn:focus-visible { background: var(--k-chalk); }
+
+.k-status {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--k-brass);
+  min-height: 1.4em;
+}
+
+.k-note { margin: 0; font-size: 0.75rem; color: var(--k-ash); }
+
+/* ----------------------------------------------------------------- подвал */
+
+.k-foot {
+  border-top: 1px solid var(--k-line-soft);
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+
+.k-foot__in {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.5rem 3rem;
+  font-size: 0.8125rem;
+  color: var(--k-ash);
+}
+
+.k-foot a { color: var(--k-ash); text-decoration: none; }
+.k-foot a:hover, .k-foot a:focus-visible { color: var(--k-chalk); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
