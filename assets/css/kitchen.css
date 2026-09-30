@@ -619,3 +619,29 @@ body.k-app {
 .fauna .beak { opacity: 0.8; }
 .fauna .spout { fill: none; stroke: var(--k-ink); stroke-width: 1.6; opacity: 0.6; }
 .fauna .eye { fill: var(--k-paper); }
+
+/* ------------------------------------------------------- карточка модели */
+
+.k-specs {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.k-specs dt {
+  color: var(--k-ash);
+  border-bottom: 1px dotted var(--k-line-soft);
+  padding-bottom: 0.4rem;
+}
+
+.k-specs dd {
+  margin: 0;
+  color: var(--k-chalk);
+  text-align: right;
+  border-bottom: 1px dotted var(--k-line-soft);
+  padding-bottom: 0.4rem;
+}
+
+.k-panel__acts { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }

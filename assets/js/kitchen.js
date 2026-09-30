@@ -148,12 +148,30 @@
   var pTitle = document.querySelector("[data-panel-title]");
   var pCodes = document.querySelector("[data-panel-codes]");
   var pPhoto = document.querySelector("[data-panel-photo]");
+  var pSpecs = document.querySelector("[data-panel-specs]");
+  var pNote = document.querySelector("[data-panel-note]");
+  var pBack = document.querySelector("[data-panel-back]");
+  var pEyebrow = document.querySelector("[data-panel-eyebrow]");
+
+  var MODELS = {};
+  try {
+    var raw = document.getElementById("vard-models");
+    if (raw) MODELS = JSON.parse(raw.textContent);
+  } catch (e) { MODELS = {}; }
+
+  var lastLand = null;
   var askField = document.querySelector("[data-ask-field]");
   var current = "";
 
   function showLand(g) {
     if (!panel) return;
     current = g.getAttribute("data-title") || "";
+    lastLand = g;
+    if (pEyebrow) pEyebrow.textContent = "Раздел";
+    if (pSpecs) pSpecs.hidden = true;
+    if (pNote) pNote.hidden = true;
+    if (pBack) pBack.hidden = true;
+    pCodes.hidden = false;
     pTitle.textContent = current;
     var photo = g.getAttribute("data-photo") || "";
     if (pPhoto) {
@@ -237,14 +255,73 @@
     openSheet("k-form", "Заявка");
   });
 
-  /* Любая позиция ведёт в заявку с уже проставленным артикулом. Делегируем
-     на документ: коды в панели создаются на лету, вешать на каждую кнопку
-     свой обработчик незачем. */
+
+  /* ------------------------------------------------------- карточка модели */
+
+  /* «✓» и «X» из таблиц каталога словами: галочка в столбце читается,
+     только когда рядом виден столбец, а в карточке его нет */
+  function value(v) {
+    if (v === "✓") return "есть";
+    if (v === "X" || v === "x") return "нет";
+    return v;
+  }
+
+  function showModel(code) {
+    var m = MODELS[code];
+    if (!m || !panel) return;
+    current = code;
+    if (pEyebrow) pEyebrow.textContent = m.section;
+    pTitle.textContent = m.name || code;
+    if (pPhoto) {
+      pPhoto.hidden = !m.photo;
+      if (m.photo) { pPhoto.src = m.photo; pPhoto.alt = m.section; }
+    }
+    pCodes.hidden = true;
+    if (pSpecs) {
+      pSpecs.innerHTML = "";
+      var keys = Object.keys(m.specs || {});
+      keys.forEach(function (k) {
+        var dt = document.createElement("dt");
+        dt.textContent = k;
+        var dd = document.createElement("dd");
+        dd.textContent = value(m.specs[k]);
+        pSpecs.appendChild(dt);
+        pSpecs.appendChild(dd);
+      });
+      if (m.name && m.name !== code) {
+        var dt2 = document.createElement("dt");
+        dt2.textContent = "Артикул";
+        var dd2 = document.createElement("dd");
+        dd2.textContent = code;
+        pSpecs.insertBefore(dd2, pSpecs.firstChild);
+        pSpecs.insertBefore(dt2, pSpecs.firstChild);
+      }
+      pSpecs.hidden = !keys.length;
+    }
+    if (pNote) pNote.hidden = false;
+    if (pBack) pBack.hidden = !lastLand;
+    panel.hidden = false;
+    root.classList.add("k-panel-on");
+    panel.scrollTop = 0;
+  }
+
+  /* Делегируем на документ: коды в панели создаются на лету, вешать на
+     каждую кнопку свой обработчик незачем */
   document.addEventListener("click", function (e) {
     var b = e.target.closest ? e.target.closest("[data-model]") : null;
     if (!b) return;
-    if (askField) askField.value = b.getAttribute("data-model");
-    openSheet("k-form", "Заявка");
+    var code = b.getAttribute("data-model");
+    if (MODELS[code]) {
+      setHidden(sheet, true);
+      showModel(code);
+    } else {
+      if (askField) askField.value = code;
+      openSheet("k-form", "Заявка");
+    }
+  });
+
+  if (pBack) pBack.addEventListener("click", function () {
+    if (lastLand) showLand(lastLand);
   });
 
   document.addEventListener("keydown", function (e) {
