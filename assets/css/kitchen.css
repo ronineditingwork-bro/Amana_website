@@ -275,26 +275,29 @@ body.k-app {
 .pin { pointer-events: none; opacity: 0; transition: opacity 0.6s var(--k-ease) 0.5s; }
 .k-open .pin { opacity: 1; }
 
+/* Подпись набирается плотнее и темнее штриховки земли: поверх
+   решётки обычный серый вес расплывался. Трекинг убавлен — он съедал
+   ширину, которой в узких территориях и так мало. */
 .pin__name {
-  fill: var(--k-ink);
+  fill: #1a160f;
   font-family: var(--k-display);
   font-size: 17px;
-  font-weight: 400;
-  letter-spacing: 0.18em;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-anchor: middle;
   paint-order: stroke;
   stroke: var(--k-paper);
-  stroke-width: 6px;
+  stroke-width: 7px;
   stroke-linejoin: round;
 }
 
 .pin__n {
-  fill: var(--k-ink);
+  fill: #1a160f;
   font-family: var(--k-text);
   font-size: 12px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-anchor: middle;
-  opacity: 0.6;
+  opacity: 0.72;
   paint-order: stroke;
   stroke: var(--k-paper);
   stroke-width: 5px;

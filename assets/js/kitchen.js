@@ -331,6 +331,146 @@
     if (panel && !panel.hidden && pClose) pClose.click();
   });
 
+  /* Подпись земли должна помещаться в её границы. Коробку — наибольший
+     прямоугольник внутри территории — считает генератор карты; здесь
+     название переносим на строки и ужимаем под эту коробку.
+
+     Меряем в браузере, а не прикидываем по числу знаков: ширина строки
+     зависит от шрифта, трекинга и того, какие буквы попались. */
+  function fitPins() {
+    var pins = document.querySelectorAll(".pin");
+    for (var i = 0; i < pins.length; i++) {
+      var pin = pins[i];
+      var bw = +pin.getAttribute("data-w");
+      var bh = +pin.getAttribute("data-h");
+      var name = pin.querySelector(".pin__name");
+      var num = pin.querySelector(".pin__n");
+      if (!bw || !bh || !name) continue;
+
+      var full = name.getAttribute("data-full");
+      if (full === null) {
+        full = name.textContent.trim();
+        name.setAttribute("data-full", full);
+      }
+      var words = tokens(full);
+      var base = 17;
+      // внутренние поля, чтобы буквы не упирались в границу
+      var roomW = bw - 16;
+      var roomH = bh - 12;
+
+      var best = null;
+      var maxLines = Math.min(3, words.length);
+      for (var n = 1; n <= maxLines; n++) {
+        var lines = splitLines(words, n);
+        if (lines.length !== n) continue;
+        write(name, lines, base);
+        var widest = 0;
+        for (var j = 0; j < n; j++) {
+          var len = name.childNodes[j].getComputedTextLength();
+          if (len > widest) widest = len;
+        }
+        if (!widest) continue;
+        // счётчик моделей занимает ещё строку под названием
+        var tall = n * base * 1.16 + (num ? base * 0.9 : 0);
+        var k = Math.min(roomW / widest, roomH / tall, 1);
+        // меньше строк при прочих равных читается лучше
+        if (!best || k > best.k + 0.02) best = { k: k, lines: lines };
+      }
+      if (!best) continue;
+
+      // ниже 8 единиц подпись уже не прочесть — пусть лучше чуть вылезет
+      var size = Math.max(base * best.k, 8);
+      place(name, num, best.lines, size);
+
+      /* Контрольный замер по факту: расчёт ведётся по длине строки, а
+         рамка знака шире неё на обводку-подложку и на трекинг
+         последней буквы. Дожимаем, пока подпись не войдёт в землю. */
+      for (var pass = 0; pass < 4; pass++) {
+        var bb = name.getBBox();
+        if (bb.width <= bw - 4 && bb.height <= bh - 4) break;
+        var k2 = Math.min((bw - 4) / bb.width, (bh - 4) / bb.height) * 0.98;
+        var next = Math.max(size * k2, 8);
+        if (next >= size - 0.1) break;
+        size = next;
+        place(name, num, best.lines, size);
+      }
+    }
+  }
+
+  function place(name, num, lines, size) {
+    write(name, lines, size);
+    var lh = size * 1.16;
+    var top = -((lines.length - 1) * lh) / 2 + size * 0.34;
+    name.setAttribute("y", top.toFixed(1));
+    if (num) {
+      num.setAttribute("y",
+        (top + (lines.length - 1) * lh + size * 1.05).toFixed(1));
+      num.style.fontSize = (size * 0.68).toFixed(1) + "px";
+      num.removeAttribute("dy");
+    }
+  }
+
+  /* Слова для переноса: длинное составное имя рвём по дефису, иначе
+     «СТИРАЛЬНО-СУШИЛЬНЫЕ» не влезает ни в одну строку. */
+  function tokens(text) {
+    var out = [];
+    var parts = text.split(/\s+/);
+    for (var i = 0; i < parts.length; i++) {
+      var bits = parts[i].split("-");
+      for (var j = 0; j < bits.length; j++) {
+        if (!bits[j]) continue;
+        out.push(j < bits.length - 1 ? bits[j] + "-" : bits[j]);
+      }
+    }
+    return out;
+  }
+
+  /* Делим слова на n строк так, чтобы длины строк были близки. */
+  function splitLines(words, n) {
+    if (n === 1) return [join(words)];
+    var total = 0;
+    for (var i = 0; i < words.length; i++) total += words[i].length + 1;
+    var target = total / n;
+    var lines = [], cur = [], len = 0;
+    for (var j = 0; j < words.length; j++) {
+      var add = words[j].length + 1;
+      var left = words.length - j;
+      // хватит ли слов на оставшиеся строки
+      if (cur.length && len + add > target && lines.length < n - 1 &&
+          left > n - 1 - lines.length) {
+        lines.push(join(cur));
+        cur = []; len = 0;
+      }
+      cur.push(words[j]); len += add;
+    }
+    if (cur.length) lines.push(join(cur));
+    return lines;
+  }
+
+  /* После части с дефисом пробел не нужен: дефис уже на ней. */
+  function join(words) {
+    var out = "";
+    for (var i = 0; i < words.length; i++) {
+      if (i && out.charAt(out.length - 1) !== "-") out += " ";
+      out += words[i];
+    }
+    return out;
+  }
+
+  /* Кегль ставим стилем, а не атрибутом: правило в таблице стилей
+     перебивает презентационный атрибут, и подпись оставалась крупной. */
+  function write(el, lines, size) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+    for (var i = 0; i < lines.length; i++) {
+      var ts = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+      ts.setAttribute("x", "0");
+      if (i) ts.setAttribute("dy", (size * 1.16).toFixed(1));
+      ts.textContent = lines[i];
+      el.appendChild(ts);
+    }
+    el.style.fontSize = size.toFixed(1) + "px";
+  }
+
   var fitted = false;
   window.addEventListener("resize", function () {
     // пока карту не трогали, держим её вписанной; после — не дёргаем вид
@@ -340,6 +480,12 @@
 
   fit();
   apply();
+  fitPins();
+  // первый замер мог пройти по запасному начертанию: у него другая
+  // ширина, и подпись легла бы мимо границ
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitPins);
+  }
 
   svg.addEventListener("pointerdown", function () { fitted = true; });
   svg.addEventListener("wheel", function () { fitted = true; }, { passive: true });
