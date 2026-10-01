@@ -1493,6 +1493,14 @@ a:hover .media img,
   font-size: 0.6875rem; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap;
 }
+/* Карточка без кадра: по Emil Group у нас пока только прайс, а битая
+   картинка хуже отсутствующей. Рамка держит ряд, когда фото нет. */
+.tile-card--bare {
+  border: 1px solid var(--rule);
+  padding: clamp(1.1rem, 1.8vw, 1.6rem);
+}
+.tile-card--bare .tile-card__body { padding-top: 0; }
+
 .tile-grid--compact { grid-template-columns: repeat(4, 1fr); }
 .tile-grid--compact .tile-card__name { font-size: clamp(1rem, 1.3vw, 1.125rem); }
 .tile-grid--compact .tile-card__note { font-size: 0.8125rem; }
