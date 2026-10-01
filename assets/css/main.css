@@ -1495,6 +1495,23 @@ a:hover .media img,
 }
 /* Карточка без кадра: по Emil Group у нас пока только прайс, а битая
    картинка хуже отсутствующей. Рамка держит ряд, когда фото нет. */
+/* Карточка каталога без кадра: подпись вместо пустого прямоугольника.
+   Коллекции Emil Group, на которые фабрика ещё не прислала каталог. */
+.product-card__noshot {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.5rem; padding: 1.25rem; text-align: center;
+  background: var(--bone);
+}
+.product-card__noshot b {
+  font-family: var(--font-display); font-weight: 300;
+  font-size: 0.9375rem; letter-spacing: 0.04em; color: var(--fg);
+}
+.product-card__noshot i {
+  font-style: normal; font-size: 0.75rem; letter-spacing: 0.1em;
+  color: var(--muted); font-variant-numeric: tabular-nums;
+}
+
 .tile-card--bare {
   border: 1px solid var(--rule);
   padding: clamp(1.1rem, 1.8vw, 1.6rem);

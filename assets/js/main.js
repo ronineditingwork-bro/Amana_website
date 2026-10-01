@@ -335,7 +335,7 @@
   }
 
   /* -------------------------------------------------------------- catalog */
-  // Каталог держит пять витрин — по одной на бренд. Бренд переключает
+  // Каталог держит витрину на каждый бренд. Бренд переключает
   // витрину и прячет группы фильтров, которые к ней не относятся;
   // остальные группы отбирают карточки внутри активной витрины.
   function setupCatalog() {
@@ -349,18 +349,21 @@
     var BRAND_LABEL = {
       deante: "Deante · Польша",
       italon: "Italon · керамогранит",
+      emil: "Emil Group · керамогранит",
       kkpol: "KK POL · инженерия",
       whitecross: "WHITECROSS · Польша",
       hapa: "HAPA · латунь"
     };
     var state = { brand: "deante", collection: "all", category: "all", finish: "all",
                   line: "all", effect: "all", format: "all",
+                  emmark: "all", emcoll: "all", emfmt: "all",
                   kkkind: "all", kkcoll: "all", kkfinish: "all",
                   wcsec: "all", wccoll: "all", wcfinish: "all",
                   hpsec: "all", hpcoll: "all", hpfinish: "all" };
     var GROUPS = {
       deante: ["collection", "category", "finish"],
       italon: ["line", "effect", "format"],
+      emil: ["emmark", "emcoll", "emfmt"],
       kkpol: ["kkkind", "kkcoll", "kkfinish"],
       whitecross: ["wcsec", "wccoll", "wcfinish"],
       hapa: ["hpsec", "hpcoll", "hpfinish"]
