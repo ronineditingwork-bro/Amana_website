@@ -103,6 +103,56 @@ body.k-app {
 
 .k-map { position: fixed; inset: 0; background: var(--k-paper); }
 
+/* Кант листа поверх карты: лист старой карты всегда в рамке.
+   Он не ловит указатель, иначе перекрыл бы перетаскивание. */
+.k-map::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  border: 13px solid var(--k-paper);
+  box-shadow:
+    inset 0 0 0 13px var(--k-paper),
+    inset 0 0 0 14.5px var(--ink-h),
+    inset 0 0 0 20px var(--k-paper),
+    inset 0 0 0 21px var(--ink-h);
+}
+
+/* угловые засечки канта */
+.k-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.k-frame i {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--ink-h);
+}
+.k-frame i:nth-child(1) { top: 13px; left: 13px; border-right: 0; border-bottom: 0; }
+.k-frame i:nth-child(2) { top: 13px; right: 13px; border-left: 0; border-bottom: 0; }
+.k-frame i:nth-child(3) { bottom: 13px; left: 13px; border-right: 0; border-top: 0; }
+.k-frame i:nth-child(4) { bottom: 13px; right: 13px; border-left: 0; border-top: 0; }
+
+@media (max-width: 640px) {
+  .k-map::after {
+    border-width: 7px;
+    box-shadow:
+      inset 0 0 0 7px var(--k-paper),
+      inset 0 0 0 8px var(--ink-h),
+      inset 0 0 0 11px var(--k-paper),
+      inset 0 0 0 12px var(--ink-h);
+  }
+  .k-frame i { width: 13px; height: 13px; }
+  .k-frame i:nth-child(1), .k-frame i:nth-child(2) { top: 7px; }
+  .k-frame i:nth-child(3), .k-frame i:nth-child(4) { bottom: 7px; }
+  .k-frame i:nth-child(1), .k-frame i:nth-child(3) { left: 7px; }
+  .k-frame i:nth-child(2), .k-frame i:nth-child(4) { right: 7px; }
+}
+
 #map { width: 100%; height: 100%; display: block; cursor: grab; }
 #map.is-dragging { cursor: grabbing; }
 
@@ -141,9 +191,47 @@ body.k-app {
 
 .k-map:has(.land.is-on) .land:not(.is-on) { opacity: 0.45; }
 
-.relief { fill: var(--k-ink); opacity: 0.55; pointer-events: none; }
-.relief .thin { stroke: var(--k-paper); stroke-width: 1.4; fill: none; }
-.relief .thin2 { stroke: var(--k-ink); stroke-width: 1.2; fill: none; }
+/* зубцы обода розы и свёрнутые концы ленты картуша */
+.rose__tick line { stroke: var(--ink-h); stroke-width: 1.2; }
+.rose--sm { opacity: 0.8; }
+.cart__tail {
+  fill: var(--k-paper);
+  stroke: var(--ink-h);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+.cart__curl {
+  fill: none;
+  stroke: var(--ink-h);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.rivers { pointer-events: none; }
+.river {
+  fill: none;
+  stroke: var(--k-ink);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+
+/* Рельеф тоже контурный: сплошные горы среди линейной графики читались
+   бы пятнами, а не рисунком. Объём даёт штриховка затенённого склона. */
+.relief {
+  fill: var(--k-paper);
+  stroke: var(--k-ink);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  opacity: 0.75;
+  pointer-events: none;
+}
+.relief .thin { stroke: var(--k-ink); stroke-width: 0.9; fill: none; }
+.relief .thin2 { stroke: var(--k-ink); stroke-width: 0.9; fill: none; }
+/* пальмы рисуются одним штрихом, без заливки */
+.relief .trunk { stroke: var(--k-ink); stroke-width: 1.8; fill: none; }
+.relief .frond { stroke: var(--k-ink); stroke-width: 1.3; fill: none; }
+.relief .cut { fill: var(--k-paper); }
 
 /* компас и картуш */
 .rose { pointer-events: none; }
@@ -258,9 +346,18 @@ body.k-app {
 .k-knob text {
   fill: #14140f;
   font-family: var(--k-display);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
+}
+
+/* подписи отсеков лотка для порошка */
+.k-mark {
+  fill: #b89b6a;
+  font-family: var(--k-display);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
 }
 
 .k-hint {
@@ -613,12 +710,22 @@ body.k-app {
 /* поверх заливки — крошка: без неё лёд неотличим от бумаги моря */
 .ice-x { fill: url(#ice-p); stroke: none; pointer-events: none; }
 
-.fauna { fill: var(--k-ink); opacity: 0.62; pointer-events: none; }
-.fauna .thin2 { stroke: var(--k-ink); stroke-width: 1.4; fill: none; }
-.fauna .spout { opacity: 0.55; }
-.fauna .beak { opacity: 0.8; }
-.fauna .spout { fill: none; stroke: var(--k-ink); stroke-width: 1.6; opacity: 0.6; }
-.fauna .eye { fill: var(--k-paper); }
+/* Морская живность рисуется контуром, а не заливкой: сплошное пятно
+   на этом масштабе читается кляксой, а не зверем. */
+.fauna {
+  fill: var(--k-paper);
+  stroke: var(--k-ink);
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+  opacity: 0.8;
+  pointer-events: none;
+}
+.fauna .thin,
+.fauna .thin2 { stroke: var(--k-ink); stroke-width: 0.9; fill: none; }
+.fauna .spout { fill: none; stroke: var(--k-ink); stroke-width: 1; opacity: 0.7; }
+.fauna .beak { fill: var(--k-ink); stroke: none; }
+.fauna .eye { fill: var(--k-ink); stroke: none; }
+.fauna .cut { fill: none; stroke: var(--k-ink); stroke-width: 0.8; }
 
 /* ------------------------------------------------------- карточка модели */
 
