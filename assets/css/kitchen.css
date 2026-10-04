@@ -585,6 +585,27 @@ body.k-app {
   border: 1px solid var(--k-line-soft);
 }
 
+/* Цена модели под заголовком карточки. Артикул поставщика — рядом,
+   помельче: он нужен в заявке, но читается вторым. */
+.k-price {
+  margin: 0.35rem 0 1.25rem;
+  font-family: var(--k-display);
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  color: var(--k-chalk);
+}
+.k-price span {
+  display: block;
+  margin-top: 0.3rem;
+  font-family: var(--k-text);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--k-ash);
+}
+.k-price--ask { font-size: 1.125rem; color: var(--k-ash); }
+
 .k-panel__photo {
   width: 100%;
   height: auto;

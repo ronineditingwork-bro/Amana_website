@@ -152,6 +152,7 @@
   var pNote = document.querySelector("[data-panel-note]");
   var pBack = document.querySelector("[data-panel-back]");
   var pEyebrow = document.querySelector("[data-panel-eyebrow]");
+  var pPrice = document.querySelector("[data-panel-price]");
 
   var MODELS = {};
   try {
@@ -168,6 +169,7 @@
     current = g.getAttribute("data-title") || "";
     lastLand = g;
     if (pEyebrow) pEyebrow.textContent = "Раздел";
+    if (pPrice) pPrice.hidden = true;
     if (pSpecs) pSpecs.hidden = true;
     if (pNote) pNote.hidden = true;
     if (pBack) pBack.hidden = true;
@@ -266,12 +268,27 @@
     return v;
   }
 
+  /* 139990 → «139 990»: неразрывный пробел, чтобы цена не рвалась
+     по строкам в узкой панели. */
+  function money(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
+  }
+
   function showModel(code) {
     var m = MODELS[code];
     if (!m || !panel) return;
     current = code;
     if (pEyebrow) pEyebrow.textContent = m.section;
     pTitle.textContent = m.name || code;
+    if (pPrice) {
+      pPrice.hidden = false;
+      var sku = m.sku ? "<span>Артикул " + m.sku + "</span>" : "";
+      // пять моделей каталога 2025 в прайс 2026 не попали: честнее
+      // написать «по запросу», чем подставить цену соседней отделки
+      pPrice.className = m.price ? "k-price" : "k-price k-price--ask";
+      pPrice.innerHTML = (m.price ? money(m.price) + " ₽" : "Цена по запросу")
+        + sku;
+    }
     if (pPhoto) {
       pPhoto.hidden = !m.photo;
       if (m.photo) { pPhoto.src = m.photo; pPhoto.alt = m.section; }
