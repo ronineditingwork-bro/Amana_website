@@ -153,6 +153,7 @@
   var pBack = document.querySelector("[data-panel-back]");
   var pEyebrow = document.querySelector("[data-panel-eyebrow]");
   var pPrice = document.querySelector("[data-panel-price]");
+  var pDesc = document.querySelector("[data-panel-desc]");
 
   var MODELS = {};
   try {
@@ -170,6 +171,7 @@
     lastLand = g;
     if (pEyebrow) pEyebrow.textContent = "Раздел";
     if (pPrice) pPrice.hidden = true;
+    if (pDesc) pDesc.hidden = true;
     if (pSpecs) pSpecs.hidden = true;
     if (pNote) pNote.hidden = true;
     if (pBack) pBack.hidden = true;
@@ -294,6 +296,19 @@
       if (m.photo) { pPhoto.src = m.photo; pPhoto.alt = m.section; }
     }
     pCodes.hidden = true;
+    /* Позиции из прайса 2026 в каталог 2025 не попали, таблицы у них
+       нет. Показываем описание поставщика — это лучше пустого места. */
+    var bare = !Object.keys(m.specs || {}).length;
+    if (pDesc) {
+      var only = m.desc && bare;
+      pDesc.hidden = !only;
+      if (only) pDesc.textContent = m.desc;
+    }
+    // оговорка под карточкой говорит о том источнике, который виден
+    if (pNote) {
+      var key = bare ? "noteDesc" : "noteSpecs";
+      if (pNote.dataset[key]) pNote.textContent = pNote.dataset[key];
+    }
     if (pSpecs) {
       pSpecs.innerHTML = "";
       var keys = Object.keys(m.specs || {});
