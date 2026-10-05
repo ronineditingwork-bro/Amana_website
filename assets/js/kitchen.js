@@ -154,12 +154,37 @@
   var pEyebrow = document.querySelector("[data-panel-eyebrow]");
   var pPrice = document.querySelector("[data-panel-price]");
   var pDesc = document.querySelector("[data-panel-desc]");
+  var pCodesHead = document.querySelector("[data-panel-codes-head]");
 
   var MODELS = {};
   try {
     var raw = document.getElementById("vard-models");
     if (raw) MODELS = JSON.parse(raw.textContent);
   } catch (e) { MODELS = {}; }
+
+  /* Какие модели в каком разделе — чтобы из открытой карточки можно
+     было перейти к соседней, не возвращаясь в раздел. Порядок тот же,
+     что в каталоге: объект пришёл разобранным из JSON по порядку. */
+  var BY_SECTION = {};
+  Object.keys(MODELS).forEach(function (code) {
+    var sec = MODELS[code].section || "";
+    (BY_SECTION[sec] = BY_SECTION[sec] || []).push(code);
+  });
+
+  function fillCodes(codes, active) {
+    pCodes.innerHTML = "";
+    codes.forEach(function (code) {
+      var li = document.createElement("li");
+      li.className = "k-sku";
+      var b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("data-model", code);
+      if (code === active) b.setAttribute("aria-current", "true");
+      b.textContent = code;
+      li.appendChild(b);
+      pCodes.appendChild(li);
+    });
+  }
 
   var lastLand = null;
   var askField = document.querySelector("[data-ask-field]");
@@ -185,18 +210,9 @@
         pPhoto.alt = current + " — кадр из каталога VÄRD";
       }
     }
-    pCodes.innerHTML = "";
-    (g.getAttribute("data-codes") || "").split(" ").filter(Boolean)
-      .forEach(function (code) {
-        var li = document.createElement("li");
-        li.className = "k-sku";
-        var b = document.createElement("button");
-        b.type = "button";
-        b.setAttribute("data-model", code);
-        b.textContent = code;
-        li.appendChild(b);
-        pCodes.appendChild(li);
-      });
+    if (pCodesHead) pCodesHead.hidden = true;
+    fillCodes((g.getAttribute("data-codes") || "").split(" ").filter(Boolean),
+      null);
     Array.prototype.forEach.call(document.querySelectorAll(".land.is-on"),
       function (x) { x.classList.remove("is-on"); });
     g.classList.add("is-on");
@@ -295,7 +311,10 @@
       pPhoto.hidden = !m.photo;
       if (m.photo) { pPhoto.src = m.photo; pPhoto.alt = m.section; }
     }
-    pCodes.hidden = true;
+    var kin = BY_SECTION[m.section] || [];
+    pCodes.hidden = kin.length < 2;
+    if (pCodesHead) pCodesHead.hidden = pCodes.hidden;
+    if (!pCodes.hidden) fillCodes(kin, code);
     /* Позиции из прайса 2026 в каталог 2025 не попали, таблицы у них
        нет. Показываем описание поставщика — это лучше пустого места. */
     var bare = !Object.keys(m.specs || {}).length;
