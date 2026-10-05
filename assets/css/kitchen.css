@@ -615,10 +615,15 @@ body.k-app {
   color: var(--k-chalk);
 }
 
+/* Цена стоит внизу карточки, рядом с кнопкой заявки: сверху её
+   пролистывали, читая характеристики, и к концу списка цены на экране
+   уже не было. Линия сверху отделяет её от оговорки. */
 .k-price {
-  margin: 0.35rem 0 1.25rem;
+  margin: 0.25rem 0 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--k-line);
   font-family: var(--k-display);
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 300;
   letter-spacing: 0.01em;
   color: var(--k-chalk);
