@@ -155,10 +155,11 @@
   var pPrice = document.querySelector("[data-panel-price]");
   var pDesc = document.querySelector("[data-panel-desc]");
   var pCodesHead = document.querySelector("[data-panel-codes-head]");
+  var pKind = document.querySelector("[data-panel-kind]");
 
   var MODELS = {};
   try {
-    var raw = document.getElementById("vard-models");
+    var raw = document.getElementById("kitchen-models");
     if (raw) MODELS = JSON.parse(raw.textContent);
   } catch (e) { MODELS = {}; }
 
@@ -171,11 +172,24 @@
     (BY_SECTION[sec] = BY_SECTION[sec] || []).push(code);
   });
 
+  /* В разделе стоят модели двух фабрик. Чтобы в списке соседей было
+     видно, где кончилась одна и началась другая, перед первой моделью
+     фабрики вставляется её подпись. */
   function fillCodes(codes, active) {
     pCodes.innerHTML = "";
+    var brand = null;
     codes.forEach(function (code) {
+      var m = MODELS[code] || {};
+      if (m.brand && m.brand !== brand) {
+        brand = m.brand;
+        var head = document.createElement("li");
+        head.className = "k-sku__brand";
+        head.textContent = brand;
+        pCodes.appendChild(head);
+      }
       var li = document.createElement("li");
       li.className = "k-sku";
+      if (m.brand) li.setAttribute("data-brand", m.brand);
       var b = document.createElement("button");
       b.type = "button";
       b.setAttribute("data-model", code);
@@ -195,6 +209,7 @@
     current = g.getAttribute("data-title") || "";
     lastLand = g;
     if (pEyebrow) pEyebrow.textContent = "Раздел";
+    if (pKind) pKind.hidden = true;
     if (pPrice) pPrice.hidden = true;
     if (pDesc) pDesc.hidden = true;
     if (pSpecs) pSpecs.hidden = true;
@@ -267,6 +282,46 @@
   var sClose = document.querySelector("[data-sheet-close]");
   if (sClose) sClose.addEventListener("click", function () { setHidden(sheet, true); });
 
+  /* Переключатель фабрик над списком разделов. Прячем не отдельные
+     плашки, а группу фабрики целиком — вместе с её подписью; раздел,
+     в котором после этого ничего не осталось, уходит сам. */
+  var filter = document.querySelector("[data-brand-filter]");
+  var lines = document.querySelector("[data-lines]");
+  if (filter && lines) {
+    filter.addEventListener("click", function (e) {
+      var b = e.target.closest ? e.target.closest("[data-brand-pick]") : null;
+      if (!b) return;
+      var pick = b.getAttribute("data-brand-pick");
+      Array.prototype.forEach.call(filter.querySelectorAll("[data-brand-pick]"),
+        function (x) {
+          var on = x === b;
+          x.classList.toggle("is-on", on);
+          x.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+      Array.prototype.forEach.call(lines.querySelectorAll(".k-group"),
+        function (g) {
+          g.hidden = !!pick && g.getAttribute("data-brand") !== pick;
+        });
+      // кадр раздела снят из каталога VÄRD: в списке одной только
+      // Midea ему не место
+      Array.prototype.forEach.call(lines.querySelectorAll(".k-line__photo"),
+        function (img) {
+          img.hidden = !!pick && img.getAttribute("data-brand") !== pick;
+        });
+      Array.prototype.forEach.call(lines.querySelectorAll(".k-line"),
+        function (l) {
+          l.hidden = !l.querySelector(".k-group:not([hidden])");
+          // счётчик раздела считает то, что видно
+          var n = l.querySelectorAll(".k-group:not([hidden]) .k-sku").length;
+          var c = l.querySelector(".k-line__count");
+          if (c) c.textContent = n;
+          // кадра не видно — списки занимают и его колонку
+          l.classList.toggle("is-bare",
+            !l.querySelector(".k-line__photo:not([hidden])"));
+        });
+    });
+  }
+
   // «Запросить подбор» из панели: несём раздел в форму, чтобы заявка
   // приходила с указанием, чем интересуются
   var ask = document.querySelector("[data-ask]");
@@ -296,8 +351,17 @@
     var m = MODELS[code];
     if (!m || !panel) return;
     current = code;
-    if (pEyebrow) pEyebrow.textContent = m.section;
+    if (pEyebrow) {
+      pEyebrow.textContent = m.brand ? m.brand + " · " + m.section : m.section;
+    }
     pTitle.textContent = m.name || code;
+    /* У Midea имени в прайсе нет, есть категория: «Отдельностоящий
+       холодильник с возможностью встраивания многодверный». В заголовок
+       она не помещается, поэтому идёт строкой под кодом. */
+    if (pKind) {
+      pKind.hidden = !m.kind;
+      pKind.textContent = m.kind || "";
+    }
     if (pPrice) {
       pPrice.hidden = false;
       var sku = m.sku ? "<span>Артикул " + m.sku + "</span>" : "";
@@ -323,9 +387,11 @@
       pDesc.hidden = !only;
       if (only) pDesc.textContent = m.desc;
     }
-    // оговорка под карточкой говорит о том источнике, который виден
+    // оговорка под карточкой говорит о том источнике, который виден:
+    // у Midea источник один на всю линейку — прайс октября 2026
     if (pNote) {
-      var key = bare ? "noteDesc" : "noteSpecs";
+      var key = m.brand === "Midea" ? "noteMidea" : (bare ? "noteDesc" : "noteSpecs");
+      if (!pNote.dataset[key]) key = bare ? "noteDesc" : "noteSpecs";
       if (pNote.dataset[key]) pNote.textContent = pNote.dataset[key];
     }
     if (pSpecs) {
